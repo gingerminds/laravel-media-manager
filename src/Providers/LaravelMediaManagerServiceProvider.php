@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
+namespace Gingerminds\LaravelMediaManager\Providers;
 
 use ApiPlatform\State\ProviderInterface;
 use Illuminate\Support\ServiceProvider;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 
 class LaravelMediaManagerServiceProvider extends ServiceProvider
 {
