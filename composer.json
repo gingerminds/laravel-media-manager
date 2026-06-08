@@ -15,7 +15,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "gingerminds/laravel-core": "^2.3 || dev-develop"
+        "gingerminds/laravel-core": "^2.4 || dev-develop"
     },
     "require-dev": {
         "larastan/larastan": "^3.8",

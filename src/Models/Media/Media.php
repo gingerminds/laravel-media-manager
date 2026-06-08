@@ -10,9 +10,13 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Gingerminds\LaravelCore\Models\ResourceModelInterface;
 use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaProvider;
+use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+/**
+ * @property string $file_name
+ */
 #[ApiResource(
     operations: [
         new GetCollection(
@@ -30,24 +34,32 @@ use Symfony\Component\Serializer\Attribute\Groups;
     serialize: new Groups([
         Media::GROUP_LIST,
         Media::GROUP_READ,
+        Basket::GROUP_READ,
     ])
 )]
 #[ApiProperty(property: 'name', serialize: new Groups([
     Media::GROUP_LIST,
     Media::GROUP_READ,
+    Basket::GROUP_READ,
 ]))]
 #[ApiProperty(property: 'file_name', serialize: new Groups([
     Media::GROUP_LIST,
     Media::GROUP_READ,
+    Basket::GROUP_READ,
 ]))]
 #[ApiProperty(property: 'mime_type', serialize: new Groups([
     Media::GROUP_LIST,
     Media::GROUP_READ,
+    Basket::GROUP_READ,
 ]))]
 #[ApiProperty(property: 'size', serialize: new Groups([
     Media::GROUP_LIST,
     Media::GROUP_READ,
+    Basket::GROUP_READ,
 ]))]
+/**
+ * @property string $file_name
+ */
 class Media extends Model implements ResourceModelInterface
 {
     protected $table = 'medias';
