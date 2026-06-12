@@ -16,7 +16,7 @@ class MediaController extends AbstractController
     public const string LABEL_S = 'translation.media.name_s';
 
     public function __construct(
-        private readonly MediaRepository $repository
+        protected readonly MediaRepository $repository
     ) {
     }
 

@@ -1,10 +1,12 @@
 @foreach($items as $media)
     <tr>
         <td>{{ $media->id }}</td>
+        <td>{{ $media->name }}</td>
+        <td>{{ $media->language->iso }}</td>
         <td class="text-end">
             <div class="btn-group" role="group">
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('gingerminds-media-manager.medias.edit', $media) }}">
-                    <i class="bi bi-edit"></i>
+                    <i class="bi bi-pencil-square"></i>
                 </a>
                 <button type="button"
                         class="btn btn-outline-danger btn-sm js-remove-item"
