@@ -9,6 +9,7 @@ use ApiPlatform\State\ProviderInterface;
 use Gingerminds\LaravelMediaManager\Auth\BasketLoginResponseEnricher;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
 use Gingerminds\LaravelMediaManager\Policies\Basket\BasketPolicy;
+use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
@@ -39,6 +40,13 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
         if (config('gingerminds-media-manager.basket.enabled', true)) {
             $this->app->tag([BasketLoginResponseEnricher::class], 'gingerminds-core.login-enrichers');
         }
+
+        $this->app->singleton(FileUploadService::class, function () {
+            return new FileUploadService(
+                disk:   config('gingerminds-media-manager.disk', 'public'),
+                folder: config('gingerminds-media-manager.folder', 'uploads'),
+            );
+        });
     }
 
     public function boot(): void
@@ -71,6 +79,13 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
         // Enregistrement de la policy basket
         if (config('gingerminds-media-manager.basket.enabled', true)) {
             Gate::policy(Basket::class, BasketPolicy::class);
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../../resources/scss' => resource_path('scss/vendor/gingerminds-media-manager'),
+                __DIR__ . '/../../resources/js'   => resource_path('js/vendor/gingerminds-media-manager'),
+            ], 'gingerminds-assets');
         }
     }
 

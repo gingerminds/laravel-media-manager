@@ -1,6 +1,30 @@
 <?php
 
 return [
+    'form' => [
+        'file' => 'Fichier',
+        'message' => [
+            'file' => [
+                'your_file' => 'Votre fichier',
+                'your_files' => 'Vos fichiers',
+                'dropzone_for' => 'Zone de dépôt pour',
+                'per_file' => 'Par fichier',
+                'select_file' => 'Fichier sélectionné',
+                'select_files' => 'Fichiers sélectionnés'
+            ]
+        ],
+        'validation' => [
+            'file' => [
+                'all_types' => 'Tout types',
+            ]
+        ]
+    ],
+
+    'action' => [
+        'browse' => 'Parcourir',
+        'drag' => 'Glisser et déposer',
+    ],
+
     'medias' => [
         'name_s' => 'Media',
         'name_p' => 'Medias',
