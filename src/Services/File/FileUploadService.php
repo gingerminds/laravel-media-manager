@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Services\File;
 
+use Gingerminds\LaravelMediaManager\Models\File\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -11,52 +12,63 @@ use RuntimeException;
 class FileUploadService
 {
     public function __construct(
+        private readonly GlideCacheService $glideCacheService,
         private readonly string $disk = 'public',
         private readonly string $folder = 'uploads',
     ) {
     }
 
-    /**
-     * @return array{file_name: string, mime_type: string, size: int}
-     */
-    public function store(UploadedFile $file, ?string $folder = null): array
+    public function store(UploadedFile $file, ?string $folder = null): File
     {
-        $path = $file->store($folder ?? $this->folder, $this->disk);
+        $path = $file->storeAs($folder ?? $this->folder, $file->getClientOriginalName(), $this->disk);
 
         if ($path === false) {
             throw new RuntimeException('Failed to store uploaded file.');
         }
 
-        return [
-            'file_name' => $path,
-            'mime_type' => $file->getMimeType() ?? 'application/octet-stream',
-            'size'      => (int) $file->getSize(),
-        ];
+        return File::create([
+            'disk'          => $this->disk,
+            'path'          => $path,
+            'mime_type'     => $file->getMimeType() ?? 'application/octet-stream',
+            'original_name' => $file->getClientOriginalName(),
+            'size'          => (int) $file->getSize(),
+        ]);
     }
 
-    /**
-     * @return array{file_name: string, mime_type: string, size: int}
-     */
-    public function replace(UploadedFile $file, ?string $existing, ?string $folder = null): array
-    {
+    public function replace(
+        UploadedFile $file,
+        ?File $existing,
+        ?string $folder = null,
+        ?callable $beforeDelete = null
+    ): File {
+        if ($existing instanceof File && $beforeDelete !== null) {
+            $beforeDelete($existing);
+        }
+
         $this->delete($existing);
 
         return $this->store($file, $folder);
     }
 
-    public function delete(?string $path): void
+    public function delete(?File $file): void
     {
-        if ($path && Storage::disk($this->disk)->exists($path)) {
-            Storage::disk($this->disk)->delete($path);
+        if (!$file instanceof File) {
+            return;
         }
+
+        $this->glideCacheService->clear($file);
+
+        Storage::disk($file->disk)->delete($file->path);
+
+        $file->delete();
     }
 
-    public function url(?string $path): ?string
+    public function url(?File $file): ?string
     {
-        if (!$path) {
+        if (!$file instanceof File) {
             return null;
         }
 
-        return Storage::disk($this->disk)->url($path);
+        return Storage::disk($file->disk)->url($file->path);
     }
 }

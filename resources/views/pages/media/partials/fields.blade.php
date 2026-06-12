@@ -7,7 +7,7 @@
                         :label="__('gingerminds-media-manager::translation.form.file')"
                         accept="image/*,.pdf,.xlsx,video/mp4,.zip,application/zip"
                         size="sm"
-                        :existing-file="isset($media) ? $media->file_name : null"
+                        :existing-file="isset($media) ? $media->file?->path : null"
                 />
             </div>
         </div>

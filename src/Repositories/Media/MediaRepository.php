@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Gingerminds\LaravelMediaManager\Repositories\Media;
 
 use Gingerminds\LaravelCore\Http\Requests\FormRequestInterface;
 use Gingerminds\LaravelCore\Models\ResourceModelInterface;
 use Gingerminds\LaravelCore\Repositories\AbstractRepository;
 use Gingerminds\LaravelCore\Repositories\RepositoryInterface;
+use Gingerminds\LaravelMediaManager\Models\File\File;
 use Gingerminds\LaravelMediaManager\Models\Media\Media;
 use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use InvalidArgumentException;
@@ -17,7 +20,7 @@ use InvalidArgumentException;
 class MediaRepository extends AbstractRepository implements RepositoryInterface
 {
     public function __construct(
-        private FileUploadService $uploadService,
+        private readonly FileUploadService $uploadService,
     ) {
     }
 
@@ -31,24 +34,39 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
         ResourceModelInterface $resourceModel
     ): ResourceModelInterface {
         if (!$resourceModel instanceof Media) {
-            throw new InvalidArgumentException('ResourceModelInterface must be an instance of ' . Media::class);
+            throw new InvalidArgumentException(
+                'ResourceModelInterface must be an instance of ' . Media::class
+            );
         }
 
         if (!$request instanceof FormRequestInterface) {
             return $resourceModel;
         }
 
-        $resourceModel->fill($request->all());
+        $uploadedFile = $request->file('file');
 
-        $file = $request->file('file');
+        if ($uploadedFile !== null) {
+            /** @var File|null $oldFile */
+            $oldFile = $resourceModel->file;
 
-        if ($file !== null) {
-            $meta = $this->uploadService->replace($file, $resourceModel->file_name, 'media');
+            $file = $this->uploadService->replace(
+                $uploadedFile,
+                $oldFile,
+                'medias',
+                function () use ($resourceModel) {
+                    $resourceModel->file()->dissociate();
+                    $resourceModel->save();
+                }
+            );
 
             $resourceModel->fill([
-                'name' => $request->input('name') ?? $file->getClientOriginalName(),
-                ...$meta,
+                'name' => $request->input('name') ?? $file->original_name,
             ]);
+
+            $resourceModel->file()->associate($file);
+            $resourceModel->save();
+
+            return $resourceModel;
         }
 
         $resourceModel->save();

@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Providers;
 
+use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\State\ProviderInterface;
 use Gingerminds\LaravelMediaManager\Auth\BasketLoginResponseEnricher;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
+use Gingerminds\LaravelMediaManager\OpenApi\FileFormatDecorator;
 use Gingerminds\LaravelMediaManager\Policies\Basket\BasketPolicy;
+use Gingerminds\LaravelMediaManager\Serializer\Media\MediaNormalizer;
 use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
+use Gingerminds\LaravelMediaManager\Services\File\GlideCacheService;
+use Gingerminds\LaravelMediaManager\Services\Processor\ImageProcessor;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
@@ -23,6 +28,12 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
             __DIR__ . '/../../config/gingerminds-media-manager.php',
             'gingerminds-media-manager'
         );
+
+        $glide = require_once __DIR__ . '/../../config/filesystems.php';
+
+        config([
+            'filesystems.disks.glide' => $glide['disks']['glide'],
+        ]);
 
         $this->tagClassesFromPath(
             __DIR__ . '/../ApiProvider',
@@ -41,12 +52,24 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
             $this->app->tag([BasketLoginResponseEnricher::class], 'gingerminds-core.login-enrichers');
         }
 
-        $this->app->singleton(FileUploadService::class, function () {
+        $this->app->singleton(ImageProcessor::class);
+
+        $this->app->singleton(FileUploadService::class, function ($app) {
             return new FileUploadService(
-                disk:   config('gingerminds-media-manager.disk', 'public'),
-                folder: config('gingerminds-media-manager.folder', 'uploads'),
+                glideCacheService: $app->make(GlideCacheService::class),
+                disk: config('gingerminds-media-manager.disk', 'public'),
+                folder: config('gingerminds-media-manager.folder', 'uploads')
             );
         });
+
+        $this->app->extend(
+            OpenApiFactoryInterface::class,
+            function (OpenApiFactoryInterface $factory) {
+                return new FileFormatDecorator($factory);
+            }
+        );
+
+        $this->app->tag(MediaNormalizer::class, 'serializer.normalizer');
     }
 
     public function boot(): void

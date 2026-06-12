@@ -2,7 +2,6 @@
     <tr>
         <td>{{ $media->id }}</td>
         <td>{{ $media->name }}</td>
-        <td>{{ $media->language->iso }}</td>
         <td class="text-end">
             <div class="btn-group" role="group">
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('gingerminds-media-manager.medias.edit', $media) }}">

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class MediaController extends AbstractController
 {
-    public const string LABEL_S = 'translation.media.name_s';
+    public const string LABEL_S = 'gingerminds-media-manager::translation.media.name_s';
 
     public function __construct(
         protected readonly MediaRepository $repository

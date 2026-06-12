@@ -49,9 +49,15 @@ class BasketDownloadController
         $zip->open($zipPath, ZipArchive::CREATE);
 
         foreach ($medias as $media) {
-            $filePath = Storage::disk($disk)->path($media->file_name);
+            $path = $media->file?->path;
+
+            if ($path === null) {
+                continue;
+            }
+
+            $filePath = Storage::disk($disk)->path($path);
             if (file_exists($filePath)) {
-                $zip->addFile($filePath, $media->file_name);
+                $zip->addFile($filePath, $path);
             }
         }
 
