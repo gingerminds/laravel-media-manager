@@ -20,7 +20,7 @@ use InvalidArgumentException;
 class MediaRepository extends AbstractRepository implements RepositoryInterface
 {
     public function __construct(
-        private readonly FileUploadService $uploadService,
+        protected readonly FileUploadService $uploadService,
     ) {
     }
 
