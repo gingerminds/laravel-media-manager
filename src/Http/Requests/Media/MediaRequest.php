@@ -12,6 +12,8 @@ class MediaRequest extends FormRequest implements FormRequestInterface
     /** @return  string[] */
     public function rules(): array
     {
-        return [];
+        return [
+            'file' => 'required|file|mimes:jpeg,png,jpg,gif,svg,zip,xlsx,pdf|max:5096',
+        ];
     }
 }
