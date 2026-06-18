@@ -24,6 +24,8 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->register(LaravelMediaManagerAuthServiceProvider::class);
+
         $this->mergeConfigFrom(
             __DIR__ . '/../../config/gingerminds-media-manager.php',
             'gingerminds-media-manager'

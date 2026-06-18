@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaCategoryController;
 use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,4 +11,5 @@ Route::middleware('web')
     ->name('gingerminds-media-manager.')
     ->group(function () {
         Route::resource('medias', MediaController::class);
+        Route::resource('media_categories', MediaCategoryController::class);
     });

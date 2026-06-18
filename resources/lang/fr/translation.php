@@ -32,5 +32,14 @@ return [
         'message' => [
             'media_library' => 'Bibliothèque des médias'
         ]
+    ],
+
+    'media_categories' => [
+        'name_s' => 'Catégorie de média',
+        'name_p' => 'Catégories de média',
+        'manage' => 'Gestion des catégories de média',
+        'action' => [
+            'choose' => 'Choisissez une catégorie',
+        ]
     ]
 ];

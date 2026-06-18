@@ -32,5 +32,14 @@ return [
         'message' => [
             'media_library' => 'Media Library'
         ]
+    ],
+
+    'media_categories' => [
+        'name_s' => 'Media Category',
+        'name_p' => 'Media categories',
+        'manage' => 'Manage Media Categories',
+        'action' => [
+            'choose' => 'Choose category',
+        ]
     ]
 ];

@@ -5,6 +5,7 @@ namespace Gingerminds\LaravelMediaManager\Http\Controllers\Media;
 use Gingerminds\LaravelCore\Http\Controllers\AbstractController;
 use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaRequest;
 use Gingerminds\LaravelMediaManager\Models\Media\Media;
+use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
 use Gingerminds\LaravelMediaManager\Repositories\Media\MediaRepository;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -30,8 +31,9 @@ class MediaController extends AbstractController
         $view = 'gingerminds-media-manager::pages.media.index';
 
         return view($view, [
-            'resource' => Media::class,
-            'items'    => $items,
+            'resource'        => Media::class,
+            'items'           => $items,
+            'mediaCategories' => MediaCategory::all(),
         ]);
     }
 
