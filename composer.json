@@ -16,7 +16,8 @@
     "require": {
         "php": "^8.3",
         "gingerminds/laravel-core": "^2.4 || dev-develop",
-        "league/glide": "^4.0"
+        "league/glide": "^4.0",
+      "ext-zip": "*"
     },
     "require-dev": {
         "larastan/larastan": "^3.8",

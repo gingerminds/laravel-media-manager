@@ -140,6 +140,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
                 description: 'Returns a ZIP archive of all media files in the basket, 
                 then deletes the basket. Returns 422 if the basket is empty.',
             ),
+            output: false,
             read: false,
         ),
     ],

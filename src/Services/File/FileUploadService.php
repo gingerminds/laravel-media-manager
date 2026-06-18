@@ -20,7 +20,11 @@ class FileUploadService
 
     public function store(UploadedFile $file, ?string $folder = null): File
     {
-        $path = $file->storeAs($folder ?? $this->folder, $file->getClientOriginalName(), $this->disk);
+        $extension = $file->getClientOriginalExtension();
+        $basename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeName  = str($basename)->slug()->toString() . ($extension !== '' ? '.' . $extension : '');
+
+        $path = $file->storeAs($folder ?? $this->folder, $safeName, $this->disk);
 
         if ($path === false) {
             throw new RuntimeException('Failed to store uploaded file.');

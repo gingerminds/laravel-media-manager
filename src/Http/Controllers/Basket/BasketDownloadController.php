@@ -8,6 +8,7 @@ use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
 use Gingerminds\LaravelMediaManager\Repositories\Basket\BasketRepository;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -43,10 +44,16 @@ class BasketDownloadController
             throw new UnprocessableEntityHttpException('The basket is empty.');
         }
 
-        $disk    = config('gingerminds-media-manager.basket.storage_disk', 'local');
-        $zipPath = tempnam(sys_get_temp_dir(), 'basket_') . '.zip';
-        $zip     = new ZipArchive();
-        $zip->open($zipPath, ZipArchive::CREATE);
+        $mediaDisk = config('gingerminds-media-manager.disk', 'public');
+        $zipPath   = sys_get_temp_dir() . '/basket_' . uniqid('', true) . '.zip';
+        $zip       = new ZipArchive();
+
+        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+            throw new RuntimeException('Could not create zip archive.');
+        }
+
+        $addedFiles = 0;
+        $tempFiles  = [];
 
         foreach ($medias as $media) {
             $path = $media->file?->path;
@@ -55,15 +62,50 @@ class BasketDownloadController
                 continue;
             }
 
-            $filePath = Storage::disk($disk)->path($path);
-            if (file_exists($filePath)) {
-                $zip->addFile($filePath, $path);
+            if (!Storage::disk($mediaDisk)->exists($path)) {
+                continue;
             }
+
+            $extension = pathinfo($path, PATHINFO_EXTENSION);
+            $safeName  = $media->id
+                . '_'
+                . $addedFiles
+                . ($extension !== '' && $extension !== '0' ? '.' . $extension : '');
+
+            $tmpFile = sys_get_temp_dir() . '/' . $safeName;
+            file_put_contents($tmpFile, Storage::disk($mediaDisk)->get($path));
+
+            $zip->addFile($tmpFile, $safeName);
+            $tempFiles[] = $tmpFile;
+            $addedFiles++;
         }
 
-        $zip->close();
+        $closeResult = $zip->close();
+
+        if ($closeResult === false) {
+            foreach ($tempFiles as $tmpFile) {
+                @unlink($tmpFile);
+            }
+            throw new RuntimeException('Failed to close zip archive.');
+        }
+
+        if ($addedFiles === 0 || !file_exists($zipPath)) {
+            foreach ($tempFiles as $tmpFile) {
+                @unlink($tmpFile);
+            }
+            throw new UnprocessableEntityHttpException('No valid files found to download.');
+        }
+
         $basket->delete();
 
-        return response()->download($zipPath, 'basket.zip')->deleteFileAfterSend(true);
+        $response = response()->download($zipPath, 'basket.zip');
+
+        app()->terminating(function () use ($tempFiles) {
+            foreach ($tempFiles as $tmpFile) {
+                @unlink($tmpFile);
+            }
+        });
+
+        return $response;
     }
 }
