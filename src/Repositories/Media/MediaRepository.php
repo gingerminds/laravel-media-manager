@@ -10,6 +10,7 @@ use Gingerminds\LaravelCore\Repositories\AbstractRepository;
 use Gingerminds\LaravelCore\Repositories\RepositoryInterface;
 use Gingerminds\LaravelMediaManager\Models\File\File;
 use Gingerminds\LaravelMediaManager\Models\Media\Media;
+use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use InvalidArgumentException;
 
@@ -26,7 +27,7 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
 
     public function getModelClass(): string
     {
-        return Media::class;
+        return ResourceResolver::model('media');
     }
 
     public function update(

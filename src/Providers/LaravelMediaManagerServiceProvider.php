@@ -9,8 +9,13 @@ use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\State\ProviderInterface;
 use Gingerminds\LaravelMediaManager\Auth\BasketLoginResponseEnricher;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
+use Gingerminds\LaravelMediaManager\Models\Media\Media;
+use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
 use Gingerminds\LaravelMediaManager\OpenApi\FileFormatDecorator;
 use Gingerminds\LaravelMediaManager\Policies\Basket\BasketPolicy;
+use Gingerminds\LaravelMediaManager\Repositories\Media\MediaCategoryRepository;
+use Gingerminds\LaravelMediaManager\Repositories\Media\MediaRepository;
+use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Gingerminds\LaravelMediaManager\Serializer\Media\MediaNormalizer;
 use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use Gingerminds\LaravelMediaManager\Services\File\GlideCacheService;
@@ -25,6 +30,26 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->register(LaravelMediaManagerAuthServiceProvider::class);
+
+        $this->app->bind(
+            MediaRepository::class,
+            ResourceResolver::repository('media')
+        );
+
+        $this->app->bind(
+            Media::class,
+            ResourceResolver::model('media')
+        );
+
+        $this->app->bind(
+            MediaCategoryRepository::class,
+            ResourceResolver::repository('media_category')
+        );
+
+        $this->app->bind(
+            MediaCategory::class,
+            ResourceResolver::model('media_category')
+        );
 
         $this->mergeConfigFrom(
             __DIR__ . '/../../config/gingerminds-media-manager.php',

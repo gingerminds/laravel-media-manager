@@ -9,7 +9,7 @@ class MediaCategoryPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(?User $user = null): bool
+    public function viewAny(): bool
     {
         return true;
     }
@@ -17,7 +17,7 @@ class MediaCategoryPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user = null): bool
+    public function view(): bool
     {
         return true;
     }
