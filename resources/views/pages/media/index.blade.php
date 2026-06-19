@@ -11,8 +11,8 @@
 
 @section('breadcrumb')
     <x-gingerminds-core::navigation.breadcrumb
-        :title="__('gingerminds-core::translation.title_list', ['model' => __('gingerminds-media-manager::translation.media.name_p')])"
-        :items="[
+            :title="__('gingerminds-core::translation.title_list', ['model' => __('gingerminds-media-manager::translation.media.name_p')])"
+            :items="[
             ['label' => __('gingerminds-media-manager::translation.media.name_p'), 'url' => route('gingerminds-media-manager.medias.index')],
             ['label' => __('gingerminds-media-manager::translation.media.manage'), 'active' => true],
         ]"
@@ -20,9 +20,15 @@
 @endsection
 
 @section('actions')
-    <a href="{{ route('gingerminds-media-manager.medias.create') }}" class="btn btn-sm btn-success">
-        <i class="bi bi-plus-lg me-1"></i> @lang('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')])
-    </a>
+    @if(!empty($mediaCategories))
+        <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalChooseCategory">
+            <i class="bi bi-plus-lg me-1"></i> @lang('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')])
+        </button>
+    @else
+        <a href="{{ route('gingerminds-media-manager.medias.create') }}" class="btn btn-sm btn-success">
+            <i class="bi bi-plus-lg me-1"></i> @lang('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')])
+        </a>
+    @endif
 @endsection
 
 @php
@@ -40,5 +46,11 @@
 @endsection
 
 @push('modals')
-    <x-gingerminds-core::modal.modal-delete :model="__('translation.media.name_s')" routing="gingerminds-media-manager.medias"/>
+    <x-gingerminds-core::modal.modal-delete :model="__('translation.media.name_s')"
+                                            routing="gingerminds-media-manager.medias"/>
+
+    @include('gingerminds-media-manager::pages.media.partials.modal-choose-category', [
+        'mediaCategories' => $mediaCategories,
+        'createRoute' => route('gingerminds-media-manager.medias.create'),
+    ])
 @endpush

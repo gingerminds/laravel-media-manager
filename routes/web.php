@@ -2,12 +2,19 @@
 
 declare(strict_types=1);
 
-use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaController;
+use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('web')
     ->prefix(config('gingerminds-core.admin_prefix'))
     ->name('gingerminds-media-manager.')
     ->group(function () {
-        Route::resource('medias', MediaController::class);
+        Route::resource(
+            'medias',
+            ResourceResolver::controller('media')
+        );
+        Route::resource(
+            'media_categories',
+            ResourceResolver::controller('media_category')
+        );
     });

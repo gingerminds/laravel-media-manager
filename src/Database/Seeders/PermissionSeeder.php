@@ -20,6 +20,10 @@ class PermissionSeeder extends Seeder
         Permission::updateOrCreate(['name' => 'edit medias', 'guard_name' => 'web']);
         Permission::updateOrCreate(['name' => 'delete medias', 'guard_name' => 'web']);
 
+        Permission::updateOrCreate(['name' => 'view media_categories', 'guard_name' => 'web']);
+        Permission::updateOrCreate(['name' => 'edit media_categories', 'guard_name' => 'web']);
+        Permission::updateOrCreate(['name' => 'delete media_categories', 'guard_name' => 'web']);
+
         $this->command->info('Permissions table seeded!');
         // updateOrCreate roles and assign existing permissions
     }

@@ -2,7 +2,35 @@
 
 declare(strict_types=1);
 
+use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaCategoryProvider;
+use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaCategoryController;
+use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaController;
+use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaCategoryRequest;
+use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaRequest;
+use Gingerminds\LaravelMediaManager\Models\Media\Media;
+use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
+use Gingerminds\LaravelMediaManager\Repositories\Media\MediaCategoryRepository;
+use Gingerminds\LaravelMediaManager\Repositories\Media\MediaRepository;
+use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaProvider;
+
 return [
+    'resources' => [
+        'media' => [
+            'model' => Media::class,
+            'controller' => MediaController::class,
+            'repository' => MediaRepository::class,
+            'request' => MediaRequest::class,
+            'provider' => MediaProvider::class
+        ],
+
+        'media_category' => [
+            'model' => MediaCategory::class,
+            'controller' => MediaCategoryController::class,
+            'repository' => MediaCategoryRepository::class,
+            'request' => MediaCategoryRequest::class,
+            'provider' => MediaCategoryProvider::class,
+        ],
+    ],
     'basket' => [
         'enabled'        => true,
         'claim_strategy' => 'merge', // merge | replace | ignore

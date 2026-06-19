@@ -13,3 +13,5 @@
         </div>
     </div>
 </div>
+
+<input type="hidden" name="media_category_id" value="{{ isset($media) && $media->media_category_id ? $media->media_category_id : request()->query('media_category_id') }}">
