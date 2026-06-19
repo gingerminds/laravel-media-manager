@@ -18,4 +18,14 @@ class ResourceResolver
     {
         return config("gingerminds-media-manager.resources.{$resource}.controller");
     }
+
+    public static function provider(string $resource): string
+    {
+        return config("gingerminds-media-manager.resources.{$resource}.provider");
+    }
+
+    public static function request(string $resource): string
+    {
+        return config("gingerminds-media-manager.resources.{$resource}.request");
+    }
 }

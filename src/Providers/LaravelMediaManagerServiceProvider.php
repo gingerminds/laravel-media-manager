@@ -7,7 +7,13 @@ namespace Gingerminds\LaravelMediaManager\Providers;
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
 use ApiPlatform\State\ProcessorInterface;
 use ApiPlatform\State\ProviderInterface;
+use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaCategoryProvider;
+use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaProvider;
 use Gingerminds\LaravelMediaManager\Auth\BasketLoginResponseEnricher;
+use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaCategoryController;
+use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaController;
+use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaCategoryRequest;
+use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaRequest;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
 use Gingerminds\LaravelMediaManager\Models\Media\Media;
 use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
@@ -21,6 +27,7 @@ use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use Gingerminds\LaravelMediaManager\Services\File\GlideCacheService;
 use Gingerminds\LaravelMediaManager\Services\Processor\ImageProcessor;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -32,23 +39,45 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
         $this->app->register(LaravelMediaManagerAuthServiceProvider::class);
 
         $this->app->bind(
+            MediaController::class,
+            ResourceResolver::controller('media')
+        );
+        $this->app->bind(
             MediaRepository::class,
             ResourceResolver::repository('media')
         );
-
         $this->app->bind(
             Media::class,
             ResourceResolver::model('media')
         );
+        $this->app->bind(
+            MediaProvider::class,
+            ResourceResolver::provider('media')
+        );
+        $this->app->bind(
+            MediaRequest::class,
+            ResourceResolver::request('media')
+        );
 
+        $this->app->bind(
+            MediaCategoryController::class,
+            ResourceResolver::controller('media_category')
+        );
         $this->app->bind(
             MediaCategoryRepository::class,
             ResourceResolver::repository('media_category')
         );
-
         $this->app->bind(
             MediaCategory::class,
             ResourceResolver::model('media_category')
+        );
+        $this->app->bind(
+            MediaCategoryProvider::class,
+            ResourceResolver::provider('media_category')
+        );
+        $this->app->bind(
+            MediaCategoryRequest::class,
+            ResourceResolver::provider('media_category')
         );
 
         $this->mergeConfigFrom(
@@ -101,6 +130,10 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Route::model('media', ResourceResolver::model('media'));
+
+        Route::model('media_category', ResourceResolver::model('media_category'));
+
         // Chargement des routes du package
         if (! $this->app->routesAreCached()) {
             $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');
