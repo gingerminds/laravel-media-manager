@@ -46,13 +46,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
         Media::GROUP_READ,
     ]),
 )]
-#[ApiProperty(
-    property: 'media_category',
-    serialize: new Groups([
-        Media::GROUP_LIST,
-        Media::GROUP_READ,
-    ]),
-)]
 class Media extends Model implements ResourceModelInterface, FilterableModelInterface
 {
     protected $table = 'medias';
@@ -112,6 +105,7 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
                 'label'    => 'gingerminds-media-manager::translation.media_categories.name_p',
                 'model'    => MediaCategory::class,
                 'multiple' => false,
+                'display'  => 'name',
             ],
         ];
     }

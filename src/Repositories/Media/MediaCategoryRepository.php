@@ -9,6 +9,7 @@ use Gingerminds\LaravelCore\Models\ResourceModelInterface;
 use Gingerminds\LaravelCore\Repositories\AbstractRepository;
 use Gingerminds\LaravelCore\Repositories\RepositoryInterface;
 use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
+use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use InvalidArgumentException;
 
 /**
@@ -19,7 +20,7 @@ class MediaCategoryRepository extends AbstractRepository implements RepositoryIn
 {
     public function getModelClass(): string
     {
-        return MediaCategory::class;
+        return ResourceResolver::model('media_category');
     }
 
     public function update(

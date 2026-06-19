@@ -6,6 +6,7 @@ use Gingerminds\LaravelCore\Http\Controllers\AbstractController;
 use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaCategoryRequest;
 use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
 use Gingerminds\LaravelMediaManager\Repositories\Media\MediaCategoryRepository;
+use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -22,7 +23,7 @@ class MediaCategoryController extends AbstractController
 
     public function index(Request $request): Factory|View
     {
-        $this->authorize('viewAny', MediaCategory::class);
+        $this->authorize('viewAny', ResourceResolver::model('media_category'));
 
         $items = $this->repository->get($request);
 
@@ -30,7 +31,7 @@ class MediaCategoryController extends AbstractController
         $view = 'gingerminds-media-manager::pages.media_categories.index';
 
         return view($view, [
-            'resource' => MediaCategory::class,
+            'resource' => ResourceResolver::model('media_category'),
             'items'    => $items,
         ]);
     }
@@ -53,7 +54,7 @@ class MediaCategoryController extends AbstractController
 
     public function store(MediaCategoryRequest $request): RedirectResponse
     {
-        $this->authorize('create', MediaCategory::class);
+        $this->authorize('create', ResourceResolver::model('media_category'));
 
         /** @var MediaCategory $mediaCategory */
         $mediaCategory = $this->repository->update($request, new MediaCategory());

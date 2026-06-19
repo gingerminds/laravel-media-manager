@@ -2,7 +2,27 @@
 
 declare(strict_types=1);
 
+use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaCategoryController;
+use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaController;
+use Gingerminds\LaravelMediaManager\Models\Media\Media;
+use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
+use Gingerminds\LaravelMediaManager\Repositories\Media\MediaCategoryRepository;
+use Gingerminds\LaravelMediaManager\Repositories\Media\MediaRepository;
+
 return [
+    'resources' => [
+        'media' => [
+            'model' => Media::class,
+            'controller' => MediaController::class,
+            'repository' => MediaRepository::class
+        ],
+
+        'media_category' => [
+            'model' => MediaCategory::class,
+            'controller' => MediaCategoryController::class,
+            'repository' => MediaCategoryRepository::class
+        ],
+    ],
     'basket' => [
         'enabled'        => true,
         'claim_strategy' => 'merge', // merge | replace | ignore

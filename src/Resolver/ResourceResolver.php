@@ -1,0 +1,21 @@
+<?php
+
+namespace Gingerminds\LaravelMediaManager\Resolver;
+
+class ResourceResolver
+{
+    public static function model(string $resource): string
+    {
+        return config("gingerminds-media-manager.resources.{$resource}.model");
+    }
+
+    public static function repository(string $resource): string
+    {
+        return config("gingerminds-media-manager.resources.{$resource}.repository");
+    }
+
+    public static function controller(string $resource): string
+    {
+        return config("gingerminds-media-manager.resources.{$resource}.controller");
+    }
+}
