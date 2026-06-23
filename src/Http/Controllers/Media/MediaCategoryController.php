@@ -59,7 +59,7 @@ class MediaCategoryController extends AbstractController
         /** @var MediaCategory $mediaCategory */
         $mediaCategory = $this->repository->update($request, new MediaCategory());
 
-        return redirect()->route('gingerminds-media-manager.media_categories.index')
+        return redirect()->route('gingerminds-media-manager.media-categories.index')
             ->with('success', __('gingerminds-core::translation.successfully_created', [
                 'model' => __(self::LABEL_S)
                     . ' '
@@ -73,7 +73,7 @@ class MediaCategoryController extends AbstractController
 
         $this->repository->update($request, $mediaCategory);
 
-        return redirect()->route('gingerminds-media-manager.media_categories.edit', $request->id)
+        return redirect()->route('gingerminds-media-manager.media-categories.edit', $request->id)
             ->with('success', __('gingerminds-core::translation.successfully_updated', [
                 'model' => __(self::LABEL_S)
                     . ' '
@@ -86,7 +86,7 @@ class MediaCategoryController extends AbstractController
         $this->authorize('delete', $mediaCategory);
         $mediaCategory->delete();
 
-        return redirect()->route('gingerminds-media-manager.media_categories.index')
+        return redirect()->route('gingerminds-media-manager.media-categories.index')
             ->with('success', __('gingerminds-core::translation.successfully_deleted', [
                 'model' => __(self::LABEL_S)
                     . ' '

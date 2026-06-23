@@ -17,6 +17,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Symfony\Component\Serializer\Attribute\Groups;
 
+/**
+ * @property int|null $file_id
+ */
 #[ApiResource(
     operations: [
         new GetCollection(
@@ -34,20 +37,44 @@ use Symfony\Component\Serializer\Attribute\Groups;
     serialize: new Groups([
         Media::GROUP_LIST,
         Media::GROUP_READ,
-        Basket::GROUP_READ
+        Basket::GROUP_READ,
     ])
 )]
 #[ApiProperty(property: 'name', serialize: new Groups([
     Media::GROUP_LIST,
     Media::GROUP_READ,
-    Basket::GROUP_READ
+    Basket::GROUP_READ,
 ]))]
 #[ApiProperty(
     property: 'file_reference',
     serialize: new Groups([
         Media::GROUP_LIST,
         Media::GROUP_READ,
-        Basket::GROUP_READ
+        Basket::GROUP_READ,
+    ]),
+)]
+#[ApiProperty(
+    property: 'file_size',
+    serialize: new Groups([
+        Media::GROUP_LIST,
+        Media::GROUP_READ,
+        Basket::GROUP_READ,
+    ]),
+)]
+#[ApiProperty(
+    property: 'thumbnail_reference',
+    serialize: new Groups([
+        Media::GROUP_LIST,
+        Media::GROUP_READ,
+        Basket::GROUP_READ,
+    ]),
+)]
+#[ApiProperty(
+    property: 'thumbnail_size',
+    serialize: new Groups([
+        Media::GROUP_LIST,
+        Media::GROUP_READ,
+        Basket::GROUP_READ,
     ]),
 )]
 class Media extends Model implements ResourceModelInterface, FilterableModelInterface
@@ -60,6 +87,7 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
     protected $fillable = [
         'name',
         'file_id',
+        'thumbnail_id',
         'media_category_id',
     ];
 
@@ -76,7 +104,15 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
      */
     public function file(): BelongsTo
     {
-        return $this->belongsTo(File::class);
+        return $this->belongsTo(File::class, 'file_id');
+    }
+
+    /**
+     * @return BelongsTo<File, $this>
+     */
+    public function thumbnail(): BelongsTo
+    {
+        return $this->belongsTo(File::class, 'thumbnail_id');
     }
 
     /**
@@ -99,6 +135,30 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
         return $file->isImage()
             ? (string) $file->id
             : $file->path;
+    }
+
+    public function getFileSizeAttribute(): ?int
+    {
+        return $this->file?->size;
+    }
+
+    public function getThumbnailReferenceAttribute(): ?string
+    {
+        /** @var File|null $file */
+        $file = $this->thumbnail;
+
+        if ($file === null) {
+            return null;
+        }
+
+        return $file->isImage()
+            ? (string) $file->id
+            : $file->path;
+    }
+
+    public function getThumbnailSizeAttribute(): ?int
+    {
+        return $this->thumbnail?->size;
     }
 
     public static function getFilters(): array

@@ -77,7 +77,7 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
         );
         $this->app->bind(
             MediaCategoryRequest::class,
-            ResourceResolver::provider('media_category')
+            ResourceResolver::request('media_category')
         );
 
         $this->mergeConfigFrom(
