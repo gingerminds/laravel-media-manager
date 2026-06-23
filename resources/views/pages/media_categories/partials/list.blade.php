@@ -5,7 +5,7 @@
         <td>{{ $mediaCategory->name }}</td>
         <td class="text-end">
             <div class="btn-group" role="group">
-                <a class="btn btn-sm btn-outline-primary" href="{{ route('gingerminds-media-manager.media_categories.edit', $mediaCategory) }}">
+                <a class="btn btn-sm btn-outline-primary" href="{{ route('gingerminds-media-manager.media-categories.edit', $mediaCategory) }}">
                     <i class="bi bi-pencil-square"></i>
                 </a>
                 <button type="button"
@@ -14,7 +14,7 @@
                         data-bs-target="#removeModal"
                         data-model="@lang('gingerminds-media-manager::translation.media_categories.name_s')"
                         data-remove-name="{{ $mediaCategory->name ?? $mediaCategory->id }}"
-                        data-destroy-url="{{ route('gingerminds-media-manager.media_categories.destroy', $mediaCategory) }}"
+                        data-destroy-url="{{ route('gingerminds-media-manager.media-categories.destroy', $mediaCategory) }}"
                 >
                     <i class="bi-i bi-trash"></i>
                 </button>

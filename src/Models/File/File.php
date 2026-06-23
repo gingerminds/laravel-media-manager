@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $path
  * @property string $original_name
  * @property string $mime_type
+ * @property int $size
  */
 #[ApiResource(
     operations: [

@@ -44,7 +44,8 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
             return $resourceModel;
         }
 
-        $uploadedFile = $request->file('file');
+        $uploadedFile      = $request->file('file');
+        $uploadedThumbnail = $request->file('thumbnail');
 
         if ($uploadedFile !== null) {
             /** @var File|null $oldFile */
@@ -65,13 +66,26 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
             ]);
 
             $resourceModel->file()->associate($file);
-            $resourceModel->save();
+        }
 
-            return $resourceModel;
+        if ($uploadedThumbnail !== null) {
+            /** @var File|null $oldFile */
+            $oldFile = $resourceModel->thumbnail;
+
+            $file = $this->uploadService->replace(
+                $uploadedThumbnail,
+                $oldFile,
+                'medias',
+                function () use ($resourceModel) {
+                    $resourceModel->file()->dissociate();
+                    $resourceModel->save();
+                }
+            );
+
+            $resourceModel->thumbnail()->associate($file);
         }
 
         $resourceModel->save();
-
         return $resourceModel;
     }
 }

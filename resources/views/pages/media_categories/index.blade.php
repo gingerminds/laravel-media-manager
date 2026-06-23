@@ -2,7 +2,7 @@
 
 @php
     $filters = request()->get('filters', []);
-    $indexRoute = 'gingerminds-media-manager.media_categories.index';
+    $indexRoute = 'gingerminds-media-manager.media-categories.index';
 @endphp
 
 @section('title')
@@ -13,14 +13,14 @@
     <x-gingerminds-core::navigation.breadcrumb
         :title="__('gingerminds-core::translation.title_list', ['model' => __('gingerminds-media-manager::translation.media_categories.name_p')])"
         :items="[
-            ['label' => __('gingerminds-media-manager::translation.media_categories.name_p'), 'url' => route('gingerminds-media-manager.media_categories.index')],
+            ['label' => __('gingerminds-media-manager::translation.media_categories.name_p'), 'url' => route('gingerminds-media-manager.media-categories.index')],
             ['label' => __('gingerminds-media-manager::translation.media_categories.manage'), 'active' => true],
         ]"
     />
 @endsection
 
 @section('actions')
-    <a href="{{ route('gingerminds-media-manager.media_categories.create') }}" class="btn btn-sm btn-success">
+    <a href="{{ route('gingerminds-media-manager.media-categories.create') }}" class="btn btn-sm btn-success">
         <i class="bi bi-plus-lg me-1"></i> @lang('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media_categories.name_s')])
     </a>
 @endsection

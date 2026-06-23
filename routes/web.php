@@ -14,7 +14,7 @@ Route::middleware('web')
             ResourceResolver::controller('media')
         );
         Route::resource(
-            'media_categories',
+            'media-categories',
             ResourceResolver::controller('media_category')
         );
     });

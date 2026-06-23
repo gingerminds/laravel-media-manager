@@ -3,6 +3,7 @@
 return [
     'form' => [
         'file' => 'Fichier',
+        'thumbnail' => 'Miniature',
         'message' => [
             'file' => [
                 'your_file' => 'Votre fichier',
