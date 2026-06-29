@@ -5,7 +5,7 @@ namespace Gingerminds\LaravelMediaManager\Http\Controllers\Media;
 use Gingerminds\LaravelCore\Http\Controllers\AbstractController;
 use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaRequest;
 use Gingerminds\LaravelMediaManager\Models\Media\Media;
-use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
+use Gingerminds\LaravelMediaManager\Repositories\Media\MediaCategoryRepository;
 use Gingerminds\LaravelMediaManager\Repositories\Media\MediaRepository;
 use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Illuminate\Contracts\View\Factory;
@@ -18,7 +18,8 @@ class MediaController extends AbstractController
     public const string LABEL_S = 'gingerminds-media-manager::translation.media.name_s';
 
     public function __construct(
-        protected readonly MediaRepository $repository
+        protected readonly MediaRepository $repository,
+        protected readonly MediaCategoryRepository $mediaCategoryRepository,
     ) {
     }
 
@@ -34,7 +35,7 @@ class MediaController extends AbstractController
         return view($view, [
             'resource'        => ResourceResolver::model('media'),
             'items'           => $items,
-            'mediaCategories' => MediaCategory::all(),
+            'mediaCategories' => $this->mediaCategoryRepository->getRootItems(),
         ]);
     }
 

@@ -41,6 +41,10 @@ return [
         'manage' => 'Manage Media Categories',
         'action' => [
             'choose' => 'Choose category',
-        ]
+            'add_child' => 'Add a child'
+        ],
+        'form' => [
+            'parent_id' => 'Parent category',
+        ],
     ]
 ];
