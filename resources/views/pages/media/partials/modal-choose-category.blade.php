@@ -22,7 +22,10 @@
                 >
                     <option value="">— @lang('gingerminds-core::translation.none') —</option>
                     @foreach($mediaCategories as $category)
-                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @include('gingerminds-media-manager::pages.media.partials.modal-choose-category-options', [
+                            'category' => $category,
+                            'depth'    => 0,
+                        ])
                     @endforeach
                 </x-gingerminds-core::form.inputs.select>
             </div>

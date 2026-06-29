@@ -25,14 +25,14 @@ class MediaCategoryController extends AbstractController
     {
         $this->authorize('viewAny', ResourceResolver::model('media_category'));
 
-        $items = $this->repository->get($request);
+        $rootItems = $this->repository->getRootItems();
 
         /** @var view-string $view */
         $view = 'gingerminds-media-manager::pages.media_categories.index';
 
         return view($view, [
-            'resource' => ResourceResolver::model('media_category'),
-            'items'    => $items,
+            'resource'  => ResourceResolver::model('media_category'),
+            'rootItems' => $rootItems,
         ]);
     }
 
@@ -41,7 +41,9 @@ class MediaCategoryController extends AbstractController
         /** @var view-string $view */
         $view = 'gingerminds-media-manager::pages.media_categories.create';
 
-        return view($view);
+        return view($view, [
+            'categories' => $this->repository->getAllForSelect(),
+        ]);
     }
 
     public function edit(MediaCategory $mediaCategory): View
@@ -49,7 +51,10 @@ class MediaCategoryController extends AbstractController
         /** @var view-string $view */
         $view = 'gingerminds-media-manager::pages.media_categories.edit';
 
-        return view($view, ['mediaCategory' => $mediaCategory]);
+        return view($view, [
+            'mediaCategory' => $mediaCategory,
+            'categories'    => $this->repository->getAllForSelect(),
+        ]);
     }
 
     public function store(MediaCategoryRequest $request): RedirectResponse
