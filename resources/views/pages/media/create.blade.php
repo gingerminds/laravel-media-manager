@@ -1,12 +1,12 @@
 @extends('gingerminds-core::layouts.crud.form')
 
 @section('title')
-    @lang('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')])
+    @lang('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')]) {{ $mediaCategory->name }}
 @endsection
 
 @section('breadcrumb')
     <x-gingerminds-core::navigation.breadcrumb
-        :title="__('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')])"
+        :title="__('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')]) . ' (' . $mediaCategory->name . ')'"
         :items="[
             ['label' => __('gingerminds-media-manager::translation.media.name_p'), 'url' => route('gingerminds-media-manager.medias.index')],
             ['label' => __('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')]), 'active' => true],
@@ -19,7 +19,7 @@
     $indexRoute = route('gingerminds-media-manager.medias.index');
     $method = 'POST';
     $id = 'create-media-form';
-    $title = __('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')]);
+    $title = __('gingerminds-core::translation.title_m_create', ['model' => __('gingerminds-media-manager::translation.media.name_s')]) . ' (' . $mediaCategory->name . ')';
 @endphp
 
 @section('fields')

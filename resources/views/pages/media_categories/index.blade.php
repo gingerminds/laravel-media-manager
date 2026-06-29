@@ -1,9 +1,4 @@
-@extends('gingerminds-core::layouts.crud.list')
-
-@php
-    $filters = request()->get('filters', []);
-    $indexRoute = 'gingerminds-media-manager.media-categories.index';
-@endphp
+@extends('gingerminds-core::layouts.crud.list-tree')
 
 @section('title')
     @lang('gingerminds-media-manager::translation.media_categories.manage')
@@ -25,21 +20,22 @@
     </a>
 @endsection
 
-@php
-    $columns = [
-        ['name' => '#', 'sortable' => false],
-        ['name' => __('gingerminds-core::translation.form.code'), 'sortable' => true, 'property' => 'code'],
-        ['name' => __('gingerminds-core::translation.form.name'), 'sortable' => true, 'property' => 'name'],
-        ['name' => __('gingerminds-core::translation.actions'), 'sortable' => false],
-    ];
-    $sortBy = request()->query('sortBy');
-    $sortOrder = request()->query('sort');
-@endphp
-
-@section('table_list')
-    @include('gingerminds-media-manager::pages.media_categories.partials.list')
+@section('tree')
+    @if($rootItems->isEmpty())
+        <div class="text-center text-muted py-5">
+            <i class="bi bi-diagram-3 fs-1 d-block mb-2 opacity-25"></i>
+            @lang('gingerminds-core::translation.message.no_result')
+        </div>
+    @else
+        @include('gingerminds-media-manager::pages.media_categories.partials.tree', [
+            'treeItems' => $rootItems,
+            'depth' => 0,
+        ])
+    @endif
 @endsection
 
 @push('modals')
-    <x-gingerminds-core::modal.modal-delete :model="__('translation.media_categories.name_s')" routing="gingerminds-media-manager.media_categories"/>
+    <x-gingerminds-core::modal.modal-delete
+        :model="__('gingerminds-media-manager::translation.media_categories.name_s')"
+        routing="gingerminds-media-manager.media-categories"/>
 @endpush

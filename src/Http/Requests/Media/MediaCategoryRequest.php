@@ -13,8 +13,9 @@ class MediaCategoryRequest extends FormRequest implements FormRequestInterface
     public function rules(): array
     {
         return [
-            'code' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
+            'code'      => 'required|string|max:255',
+            'name'      => 'required|string|max:255',
+            'parent_id' => 'nullable|integer|exists:media_categories,id',
         ];
     }
 }

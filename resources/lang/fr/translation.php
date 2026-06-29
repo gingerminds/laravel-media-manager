@@ -41,6 +41,10 @@ return [
         'manage' => 'Gestion des catégories de média',
         'action' => [
             'choose' => 'Choisissez une catégorie',
-        ]
+            'add_child' => 'Ajouter un enfant'
+        ],
+        'form' => [
+            'parent_id' => 'Catégorie parente',
+        ],
     ]
 ];
