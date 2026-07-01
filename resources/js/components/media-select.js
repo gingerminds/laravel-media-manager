@@ -473,8 +473,7 @@ import { Modal } from 'bootstrap';
                 return;
             }
             root.dataset.mediaSelectInit = '1';
-            // eslint-disable-next-line no-new
-            new MediaSelect(root);
+            root.mediaSelect = new MediaSelect(root);
         });
     }
 
