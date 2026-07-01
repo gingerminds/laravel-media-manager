@@ -1,0 +1,130 @@
+// Shared card grid: modal search results AND the preview of already
+// selected media outside the modal (same visual layout).
+.media-select-preview,
+.media-select-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: .75rem;
+    min-height: 2.5rem;
+}
+
+.media-select-empty {
+    padding: .35rem 0;
+    grid-column: 1 / -1;
+}
+
+.media-select-item,
+.media-select-chip {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: .5rem;
+    padding: .35rem;
+    text-align: center;
+    background: #fff;
+    transition: border-color .15s ease-in-out;
+}
+
+.media-select-item {
+    cursor: pointer;
+
+    &:hover {
+        background: #f8f9fa;
+    }
+
+    &.is-selected {
+        border-color: #0d6efd;
+        background: #e7f1ff;
+    }
+
+    .media-select-item-check {
+        display: none;
+    }
+
+    &.is-selected .media-select-item-check {
+        display: block;
+    }
+}
+
+.media-select-chip {
+    border-color: #dee2e6;
+
+    [data-role="preview"][data-sortable] & {
+        cursor: grab;
+
+        &:active {
+            cursor: grabbing;
+        }
+    }
+
+    &.sortable-ghost {
+        opacity: .4;
+    }
+}
+
+.media-select-item-thumb,
+.media-select-chip-thumb {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: .35rem;
+    overflow: hidden;
+    background: #f1f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    line-height: 0;
+    color: #6c757d;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1em;
+        height: 1em;
+        line-height: 1;
+    }
+}
+
+.media-select-item-name,
+.media-select-chip-name {
+    font-size: .75rem;
+    margin-top: .35rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.media-select-item-check {
+    position: absolute;
+    top: .35rem;
+    right: .35rem;
+    color: #0d6efd;
+    background: #fff;
+    border-radius: 50%;
+    line-height: 0;
+}
+
+.media-select-chip-remove {
+    position: absolute;
+    top: .35rem;
+    right: .35rem;
+    z-index: 1;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 0;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    background: #fff;
+    color: #dc3545;
+    font-size: 1rem;
+}

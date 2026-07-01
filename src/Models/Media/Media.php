@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use Gingerminds\LaravelCore\Models\FilterableModelInterface;
 use Gingerminds\LaravelCore\Models\ResourceModelInterface;
+use Gingerminds\LaravelCore\Models\SearchableModelInterface;
 use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaProvider;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
 use Gingerminds\LaravelMediaManager\Models\File\File;
@@ -23,6 +24,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
+            paginationClientItemsPerPage: true,
             normalizationContext: ['groups' => [Media::GROUP_LIST]],
         ),
         new Get(
@@ -77,7 +79,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         Basket::GROUP_READ,
     ]),
 )]
-class Media extends Model implements ResourceModelInterface, FilterableModelInterface
+class Media extends Model implements ResourceModelInterface, FilterableModelInterface, SearchableModelInterface
 {
     protected $table = 'medias';
 
@@ -168,9 +170,17 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
                 'type'     => 'select-model',
                 'label'    => 'gingerminds-media-manager::translation.media_categories.name_p',
                 'model'    => MediaCategory::class,
-                'multiple' => false,
+                'multiple' => true,
                 'display'  => 'name',
             ],
         ];
+    }
+
+    /**
+     * @return array<string>
+     */
+    public static function getSearchableFields(): array
+    {
+        return ['name'];
     }
 }

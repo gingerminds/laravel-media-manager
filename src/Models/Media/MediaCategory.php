@@ -18,6 +18,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(
     operations: [
         new GetCollection(
+            paginationItemsPerPage: 200,
+            paginationMaximumItemsPerPage: 500,
+            paginationClientItemsPerPage: true,
             normalizationContext: ['groups' => [MediaCategory::GROUP_LIST]],
             policy: 'viewAny',
         ),
@@ -41,6 +44,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
     MediaCategory::GROUP_READ,
 ]))]
 #[ApiProperty(property: 'name', serialize: new Groups([
+    MediaCategory::GROUP_LIST,
+    MediaCategory::GROUP_READ,
+]))]
+#[ApiProperty(property: 'parent_id', serialize: new Groups([
     MediaCategory::GROUP_LIST,
     MediaCategory::GROUP_READ,
 ]))]

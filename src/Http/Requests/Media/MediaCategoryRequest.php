@@ -18,4 +18,11 @@ class MediaCategoryRequest extends FormRequest implements FormRequestInterface
             'parent_id' => 'nullable|integer|exists:media_categories,id',
         ];
     }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->input('parent_id') === '') {
+            $this->merge(['parent_id' => null]);
+        }
+    }
 }

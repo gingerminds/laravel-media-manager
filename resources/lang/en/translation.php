@@ -46,5 +46,20 @@ return [
         'form' => [
             'parent_id' => 'Parent category',
         ],
+    ],
+
+    'media_select' => [
+        'select' => 'Select a media',
+        'add' => 'Add medias',
+        'modal_title' => 'Choose a media',
+        'search_placeholder' => 'Search...',
+        'all_categories' => 'All categories',
+        'no_results' => 'No media found',
+        'no_selection' => 'No media selected',
+        'error' => 'An error occurred while loading medias',
+        'load_more' => 'Load more',
+        'selected_count_label' => 'Selected:',
+        'confirm' => 'Confirm',
+        'remove' => 'Remove',
     ]
 ];
