@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace Gingerminds\LaravelMediaManager\Services\Media;
 
 use BackedEnum;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class MediaCollectionSyncer
 {
     /**
-     * $relation is intentionally left untyped in the docblock: this method is
-     * meant to work with any project's BelongsToMany-to-Media relation, whose
-     * related/declaring model generics vary per project (e.g. a project-level
-     * Media override). BelongsToMany's template params are invariant, so
-     * pinning them here to this package's own Media class would make PHPStan
-     * reject perfectly valid calls from projects using a model override.
+     * @template TRelatedModel of Model
+     * @template TDeclaringModel of Model
+     * @template TPivotModel of Pivot
+     * @template TAccessor of string
      *
+     * @param BelongsToMany<TRelatedModel, TDeclaringModel, TPivotModel, TAccessor> $relation
      * @param array<int, int|string|null> $mediaIds
      */
     public function sync(BelongsToMany $relation, array $mediaIds, string|BackedEnum $collection): void
