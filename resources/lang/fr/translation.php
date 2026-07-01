@@ -46,5 +46,20 @@ return [
         'form' => [
             'parent_id' => 'Catégorie parente',
         ],
+    ],
+
+    'media_select' => [
+        'select' => 'Sélectionner un média',
+        'add' => 'Ajouter des médias',
+        'modal_title' => 'Choisir un média',
+        'search_placeholder' => 'Rechercher...',
+        'all_categories' => 'Toutes les catégories',
+        'no_results' => 'Aucun média trouvé',
+        'no_selection' => 'Aucun média sélectionné',
+        'error' => 'Une erreur est survenue lors du chargement des médias',
+        'load_more' => 'Charger plus',
+        'selected_count_label' => 'Sélectionnés :',
+        'confirm' => 'Valider',
+        'remove' => 'Retirer',
     ]
 ];

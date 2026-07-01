@@ -1,6 +1,13 @@
 @foreach($items as $media)
     <tr>
-        <td>{{ $media->id }}</td>
+        @php
+            $previewImgId = $media->file?->id;
+
+            if (str_contains($media->file?->mime_type, 'application')) {
+                $previewImgId = $media->thumbnail?->id;
+            }
+        @endphp
+        <td><img src="/api/files/{{ $previewImgId }}/micro" alt=""></td>
         <td>{{ $media->name }}</td>
         <td class="text-end">
             <div class="btn-group" role="group">

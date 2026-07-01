@@ -41,6 +41,7 @@ return [
     'folder' => env('MEDIA_MANAGER_FOLDER', 'uploads'),
 
     'presets' => [
+        'micro' => ['w' => 25, 'h' => 25, 'fit' => 'crop',    'q' => 70],
         'thumbnail' => ['w' => 150, 'h' => 150, 'fit' => 'crop',    'q' => 80],
         'card'      => ['w' => 400, 'h' => 300, 'fit' => 'contain', 'q' => 85],
         'hero'      => ['w' => 1280,'h' => 720, 'fit' => 'crop',    'q' => 90],

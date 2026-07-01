@@ -33,7 +33,7 @@
 
 @php
     $columns = [
-        ['name' => '#', 'sortable' => false],
+        ['name' => '', 'sortable' => false],
         ['name' => __('gingerminds-core::translation.form.name'), 'sortable' => true, 'property' => 'name'],
         ['name' => __('gingerminds-core::translation.actions'), 'sortable' => false],
     ];
