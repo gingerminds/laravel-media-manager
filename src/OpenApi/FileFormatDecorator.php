@@ -16,7 +16,7 @@ class FileFormatDecorator implements OpenApiFactoryInterface
     public function __invoke(array $context = []): OpenApi
     {
         $openApi = ($this->decorated)($context);
-        $formats = array_keys(config('gingerminds-media-manager.formats', []));
+        $formats = array_keys(config('gingerminds-media-manager.presets', []));
 
         $paths = $openApi->getPaths();
 
