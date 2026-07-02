@@ -20,7 +20,7 @@ function getFileIcon(type) {
  * (nothing is uploaded yet, so this stays client-side).
  */
 function localPreviewUrl(file) {
-    if (!file.type || !file.type.startsWith('image/')) return null;
+    if (!file.type?.startsWith('image/')) return null;
     if (!file._previewUrl) {
         file._previewUrl = URL.createObjectURL(file);
     }
@@ -85,6 +85,8 @@ function initFileField(fieldId) {
             actionsHtml += '<button type="button" class="file-preview-action file-preview-remove" data-index="' + index + '" aria-label="' + labelRemove + ' ' + entry.name + '">' +
                 '<i class="bi bi-x-circle-fill" aria-hidden="true"></i></button>';
 
+            const fallbackIcon = isExisting ? 'bi-file-earmark-fill' : getFileIcon(entry.type);
+
             const li = document.createElement('li');
             li.className = 'file-preview-item' + (tooBig ? ' file-preview-item-error' : '');
             li.innerHTML =
@@ -92,7 +94,7 @@ function initFileField(fieldId) {
                 '<div class="file-preview-thumb">' +
                     (thumbUrl
                         ? '<img src="' + thumbUrl + '" alt="">'
-                        : '<i class="bi ' + (isExisting ? 'bi-file-earmark-fill' : getFileIcon(entry.type)) + '" aria-hidden="true"></i>') +
+                        : '<i class="bi ' + fallbackIcon + '" aria-hidden="true"></i>') +
                 '</div>' +
                 '<div class="file-preview-name" title="' + entry.name + '">' + entry.name + '</div>' +
                 '<div class="file-preview-size">' + sizeLabel + '</div>' +
@@ -103,10 +105,10 @@ function initFileField(fieldId) {
         fileList.querySelectorAll('.file-preview-remove').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 const removed = selectedFiles.splice(parseInt(this.dataset.index, 10), 1)[0];
-                if (removed && removed._previewUrl) {
+                if (removed?._previewUrl) {
                     URL.revokeObjectURL(removed._previewUrl);
                 }
-                if (removed && removed.existing && removeFlag) {
+                if (removed?.existing && removeFlag) {
                     removeFlag.value = '1';
                 }
                 syncInput();

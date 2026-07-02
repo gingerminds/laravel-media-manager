@@ -155,10 +155,9 @@
                 ></button>
             </div>
             <div class="modal-body">
-                <div
+                <section
                         class="dropzone-wrapper"
                         id="{{ $id }}-dropzone"
-                        role="region"
                         aria-label="@lang('gingerminds-media-manager::translation.form.message.file.dropzone_for') {{ $label }}"
                 >
                     <div class="dropzone-area" id="{{ $id }}-area">
@@ -185,7 +184,7 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </section>
             </div>
         </div>
     </div>
