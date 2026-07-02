@@ -48,10 +48,9 @@
         @endif
     </label>
 
-    <div
+    <section
             class="dropzone-wrapper @error($id) is-invalid @enderror {{ $disabled ? 'dropzone-disabled' : '' }}"
             id="{{ $id }}-dropzone"
-            role="region"
             aria-label="@lang('gingerminds-media-manager::translation.form.message.file.dropzone_for') {{ $label }}"
     >
         {{-- Input caché --}}
@@ -130,7 +129,7 @@
                 @endif
             </ul>
         @endif
-    </div>
+    </section>
 
     @if($helper)
         <div class="form-text" id="{{ $id }}-help">{{ $helper }}</div>

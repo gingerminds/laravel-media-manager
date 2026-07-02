@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Services\File;
 
+use Gingerminds\LaravelMediaManager\Exceptions\FileUploadException;
 use Gingerminds\LaravelMediaManager\Models\File\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
 
 class FileUploadService
 {
@@ -27,7 +27,7 @@ class FileUploadService
         $path = $file->storeAs($folder ?? $this->folder, $safeName, $this->disk);
 
         if ($path === false) {
-            throw new RuntimeException('Failed to store uploaded file.');
+            throw FileUploadException::couldNotStore();
         }
 
         return File::create([

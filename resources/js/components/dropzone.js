@@ -71,10 +71,8 @@ function initDropzone(wrapperId) {
         Array.from(newFiles).forEach(function (file) {
             if (!multiple) {
                 selectedFiles = [file];
-            } else {
-                if (!selectedFiles.find(function (f) { return f.name === file.name && f.size === file.size; })) {
-                    selectedFiles.push(file);
-                }
+            } else if (!selectedFiles.find(function (f) { return f.name === file.name && f.size === file.size; })) {
+                selectedFiles.push(file);
             }
         });
         syncInput();
