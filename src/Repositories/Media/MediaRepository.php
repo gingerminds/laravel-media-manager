@@ -66,6 +66,9 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
             ]);
 
             $resourceModel->file()->associate($file);
+        } elseif ($request->boolean('file_remove') && $resourceModel->file !== null) {
+            $this->uploadService->delete($resourceModel->file);
+            $resourceModel->file()->dissociate();
         }
 
         if ($uploadedThumbnail !== null) {
@@ -77,12 +80,15 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
                 $oldFile,
                 'medias',
                 function () use ($resourceModel) {
-                    $resourceModel->file()->dissociate();
+                    $resourceModel->thumbnail()->dissociate();
                     $resourceModel->save();
                 }
             );
 
             $resourceModel->thumbnail()->associate($file);
+        } elseif ($request->boolean('thumbnail_remove') && $resourceModel->thumbnail !== null) {
+            $this->uploadService->delete($resourceModel->thumbnail);
+            $resourceModel->thumbnail()->dissociate();
         }
 
         $resourceModel->save();

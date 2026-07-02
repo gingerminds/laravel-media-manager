@@ -25,6 +25,8 @@ return [
     'action' => [
         'browse' => 'Parcourir',
         'drag' => 'Glisser et déposer',
+        'upload' => 'Téléverser',
+        'close' => 'Fermer',
     ],
 
     'medias' => [

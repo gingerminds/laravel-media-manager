@@ -25,6 +25,8 @@ return [
     'action' => [
         'browse' => 'Browse',
         'drag' => 'Drag & Drop',
+        'upload' => 'Upload',
+        'close' => 'Close',
     ],
 
     'media' => [
