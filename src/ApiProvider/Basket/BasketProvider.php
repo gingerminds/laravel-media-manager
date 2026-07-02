@@ -18,9 +18,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class BasketProvider extends AbstractApiProvider implements ProviderInterface, ApiProviderInterface
 {
-    public function __construct(private readonly BasketRepository $basketRepository)
+    public function __construct(BasketRepository $repository)
     {
-        parent::__construct($basketRepository);
+        parent::__construct($repository);
     }
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): object|array|null
@@ -29,7 +29,9 @@ class BasketProvider extends AbstractApiProvider implements ProviderInterface, A
             return parent::provide($operation, $uriVariables, $context);
         }
 
-        $basket = $this->basketRepository->findByToken($uriVariables['token']);
+        /** @var BasketRepository $repository */
+        $repository = $this->repository;
+        $basket     = $repository->findByToken($uriVariables['token']);
 
         if (!$basket instanceof Basket) {
             throw new NotFoundHttpException();

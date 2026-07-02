@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Services\Processor;
 
+use Gingerminds\LaravelMediaManager\Exceptions\UnknownImagePresetException;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
 use League\Glide\Server;
 use League\Glide\ServerFactory;
-use RuntimeException;
 
 class ImageProcessor
 {
@@ -35,7 +35,7 @@ class ImageProcessor
         $presets = config('gingerminds-media-manager.presets', []);
 
         if (!array_key_exists($preset, $presets)) {
-            throw new RuntimeException("Unknown preset: {$preset}");
+            throw UnknownImagePresetException::forPreset($preset);
         }
 
         return $this->server->makeImage($path, ['p' => $preset]);

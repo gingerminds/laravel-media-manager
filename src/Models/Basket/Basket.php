@@ -37,8 +37,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriTemplate: '/baskets',
             openapi: new OpenApiOperation(
                 summary: 'Create a basket',
-                description: 'Creates an anonymous basket. If authenticated via Sanctum, 
-                the basket is linked to the user. Pass `anonymous_token` 
+                description: 'Creates an anonymous basket. If authenticated via Sanctum,
+                the basket is linked to the user. Pass `anonymous_token`
                 to claim and merge an existing anonymous basket.',
                 requestBody: new RequestBody(
                     content: new ArrayObject([
@@ -69,7 +69,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriVariables: ['token' => new Link(fromClass: Basket::class, identifiers: ['token'])],
             openapi: new OpenApiOperation(
                 summary: 'Get a basket',
-                description: 'Returns the basket for the given token. Anonymous baskets are public. 
+                description: 'Returns the basket for the given token. Anonymous baskets are public.
                 User baskets require Sanctum authentication as the owner.',
             ),
             normalizationContext: ['groups' => [Basket::GROUP_READ]],
@@ -80,7 +80,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriVariables: ['token' => new Link(fromClass: Basket::class, identifiers: ['token'])],
             openapi: new OpenApiOperation(
                 summary: 'Delete a basket',
-                description: 'Deletes the basket. Anonymous baskets can be deleted without authentication. 
+                description: 'Deletes the basket. Anonymous baskets can be deleted without authentication.
                 User baskets require Sanctum authentication as the owner.',
             ),
             provider: BasketProvider::class,
@@ -91,7 +91,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             uriVariables: ['token' => new Link(fromClass: Basket::class, identifiers: ['token'])],
             openapi: new OpenApiOperation(
                 summary: 'Add medias to a basket',
-                description: 'Adds one or more medias to the basket by their IDs. 
+                description: 'Adds one or more medias to the basket by their IDs.
                 Already present medias are not duplicated.',
                 requestBody: new RequestBody(
                     content: new ArrayObject([
@@ -123,7 +123,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             status: 200,
             openapi: new OpenApiOperation(
                 summary: 'Remove a media from a basket',
-                description: 'Detaches a media from the basket by its numeric ID (`mediaId`). 
+                description: 'Detaches a media from the basket by its numeric ID (`mediaId`).
                 Returns the updated basket.',
             ),
             normalizationContext: ['groups' => [Basket::GROUP_READ]],
@@ -137,7 +137,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
             controller: BasketDownloadController::class,
             openapi: new OpenApiOperation(
                 summary: 'Download basket as ZIP',
-                description: 'Returns a ZIP archive of all media files in the basket, 
+                description: 'Returns a ZIP archive of all media files in the basket,
                 then deletes the basket. Returns 422 if the basket is empty.',
             ),
             output: false,

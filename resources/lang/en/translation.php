@@ -11,7 +11,8 @@ return [
                 'dropzone_for' => 'Dropzone for',
                 'per_file' => 'Per file',
                 'select_file' => 'Select file',
-                'select_files' => 'Select files'
+                'select_files' => 'Select files',
+                'too_large' => 'File too large'
             ]
         ],
         'validation' => [
@@ -24,6 +25,8 @@ return [
     'action' => [
         'browse' => 'Browse',
         'drag' => 'Drag & Drop',
+        'upload' => 'Upload',
+        'close' => 'Close',
     ],
 
     'media' => [

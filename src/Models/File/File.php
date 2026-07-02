@@ -39,11 +39,10 @@ use Illuminate\Database\Eloquent\Model;
                     new Parameter(
                         name: 'format',
                         in: 'path',
-                        description: 'Available formats: thumbnail, card, hero',
+                        description: 'Format\'s code',
                         required: true,
                         schema: [
                             'type' => 'string',
-                            'enum' => ['thumbnail', 'card', 'hero'],
                         ],
                     ),
                 ],

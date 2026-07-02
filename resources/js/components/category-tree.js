@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (toggleIcon) {
             const children = item.nextElementSibling;
-            if (children && children.classList.contains('category-tree-children')) {
+            if (children?.classList.contains('category-tree-children')) {
                 children.classList.toggle('open');
                 toggleIcon.querySelector('i').classList.toggle('bi-chevron-right');
                 toggleIcon.querySelector('i').classList.toggle('bi-chevron-down');

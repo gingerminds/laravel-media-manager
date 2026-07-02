@@ -281,9 +281,9 @@ import { Modal } from 'bootstrap';
                 params.set('filters[search]', search);
             }
 
-            const filters = Object.assign({}, this.config.filters || {});
+            const filters = { ...(this.config.filters || {}) };
             if (!this.config.lockCategory) {
-                if (this.categorySelect && this.categorySelect.value) {
+                if (this.categorySelect?.value) {
                     // A specific category was chosen in the select.
                     filters.media_category_id = this.categorySelect.value;
                 } else if (Array.isArray(this.config.allowedCategoryIds) && this.config.allowedCategoryIds.length > 0) {

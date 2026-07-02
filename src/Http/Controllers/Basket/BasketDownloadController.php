@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Http\Controllers\Basket;
 
+use Gingerminds\LaravelMediaManager\Exceptions\ZipArchiveException;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
+use Gingerminds\LaravelMediaManager\Models\Media\Media;
 use Gingerminds\LaravelMediaManager\Repositories\Basket\BasketRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use RuntimeException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -22,12 +24,49 @@ class BasketDownloadController
 
     public function __invoke(string $token): BinaryFileResponse
     {
+        $basket = $this->resolveBasketOrFail($token);
+
+        $this->authorizeDownload($basket);
+
+        $medias    = $this->getMediasOrFail($basket);
+        $mediaDisk = config('gingerminds-media-manager.disk', 'public');
+        $zipPath   = sys_get_temp_dir() . '/basket_' . uniqid('', true) . '.zip';
+
+        $zip = $this->openZipArchive($zipPath);
+
+        [$addedFiles, $tempFiles] = $this->addMediaFilesToZip($zip, $medias, $mediaDisk);
+
+        $this->closeZipArchive($zip, $tempFiles);
+
+        if ($addedFiles === 0 || !file_exists($zipPath)) {
+            $this->cleanupTempFiles($tempFiles);
+            throw new UnprocessableEntityHttpException('No valid files found to download.');
+        }
+
+        $basket->delete();
+
+        $response = response()->download($zipPath, 'basket.zip');
+
+        app()->terminating(function () use ($tempFiles) {
+            $this->cleanupTempFiles($tempFiles);
+        });
+
+        return $response;
+    }
+
+    private function resolveBasketOrFail(string $token): Basket
+    {
         $basket = $this->repository->findByToken($token);
 
         if (!$basket instanceof Basket) {
             throw new NotFoundHttpException();
         }
 
+        return $basket;
+    }
+
+    private function authorizeDownload(Basket $basket): void
+    {
         $user = auth()->guard('sanctum')->user();
 
         if ($user !== null) {
@@ -37,32 +76,46 @@ class BasketDownloadController
         if (Gate::denies('download', $basket)) {
             abort(403, 'This action is unauthorized. (BasketPolicy)');
         }
+    }
 
+    /**
+     * @return Collection<int, Media>
+     */
+    private function getMediasOrFail(Basket $basket): Collection
+    {
         $medias = $basket->medias;
 
         if ($medias->isEmpty()) {
             throw new UnprocessableEntityHttpException('The basket is empty.');
         }
 
-        $mediaDisk = config('gingerminds-media-manager.disk', 'public');
-        $zipPath   = sys_get_temp_dir() . '/basket_' . uniqid('', true) . '.zip';
-        $zip       = new ZipArchive();
+        return $medias;
+    }
+
+    private function openZipArchive(string $zipPath): ZipArchive
+    {
+        $zip = new ZipArchive();
 
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            throw new RuntimeException('Could not create zip archive.');
+            throw ZipArchiveException::couldNotCreate();
         }
 
+        return $zip;
+    }
+
+    /**
+     * @param Collection<int, Media> $medias
+     * @return array{0: int, 1: array<int, string>}
+     */
+    private function addMediaFilesToZip(ZipArchive $zip, Collection $medias, string $mediaDisk): array
+    {
         $addedFiles = 0;
         $tempFiles  = [];
 
         foreach ($medias as $media) {
             $path = $media->file?->path;
 
-            if ($path === null) {
-                continue;
-            }
-
-            if (!Storage::disk($mediaDisk)->exists($path)) {
+            if ($path === null || !Storage::disk($mediaDisk)->exists($path)) {
                 continue;
             }
 
@@ -80,32 +133,27 @@ class BasketDownloadController
             $addedFiles++;
         }
 
-        $closeResult = $zip->close();
+        return [$addedFiles, $tempFiles];
+    }
 
-        if ($closeResult === false) {
-            foreach ($tempFiles as $tmpFile) {
-                @unlink($tmpFile);
-            }
-            throw new RuntimeException('Failed to close zip archive.');
+    /**
+     * @param array<int, string> $tempFiles
+     */
+    private function closeZipArchive(ZipArchive $zip, array $tempFiles): void
+    {
+        if ($zip->close() === false) {
+            $this->cleanupTempFiles($tempFiles);
+            throw ZipArchiveException::couldNotClose();
         }
+    }
 
-        if ($addedFiles === 0 || !file_exists($zipPath)) {
-            foreach ($tempFiles as $tmpFile) {
-                @unlink($tmpFile);
-            }
-            throw new UnprocessableEntityHttpException('No valid files found to download.');
+    /**
+     * @param array<int, string> $tempFiles
+     */
+    private function cleanupTempFiles(array $tempFiles): void
+    {
+        foreach ($tempFiles as $tmpFile) {
+            @unlink($tmpFile);
         }
-
-        $basket->delete();
-
-        $response = response()->download($zipPath, 'basket.zip');
-
-        app()->terminating(function () use ($tempFiles) {
-            foreach ($tempFiles as $tmpFile) {
-                @unlink($tmpFile);
-            }
-        });
-
-        return $response;
     }
 }

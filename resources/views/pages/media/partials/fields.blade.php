@@ -14,14 +14,14 @@
                         id="file"
                         :label="__('gingerminds-media-manager::translation.form.file')"
                         accept="image/*,.pdf,.xlsx,video/mp4,.zip,application/zip"
-                        :existing-file="isset($media) ? $media->file?->path : null"
+                        :existing-file="isset($media) ? $media->file : null"
                 />
                 <x-gingerminds-media-manager::form.inputs.file
                         id="thumbnail"
                         :label="__('gingerminds-media-manager::translation.form.thumbnail')"
                         accept="image/*"
                         :required="false"
-                        :existing-file="isset($media) ? $media->thumbnail?->path : null"
+                        :existing-file="isset($media) ? $media->thumbnail : null"
                 />
             </div>
         </div>

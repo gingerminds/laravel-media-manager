@@ -1,3 +1,143 @@
+.file-field {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+
+    &.is-invalid .file-upload-trigger {
+        border-color: var(--bs-danger);
+        color: var(--bs-danger);
+    }
+
+    &.file-field-disabled {
+        opacity: .6;
+        pointer-events: none;
+    }
+}
+
+.file-upload-trigger {
+    align-self: flex-start;
+}
+
+// Card grid, deliberately mirroring .media-select-preview's layout so the two
+// components look consistent wherever a media/file preview appears.
+.file-preview-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: .75rem;
+}
+
+// Single-file fields (multiple=false) get one full-width card instead of a
+// small grid tile, since there's only ever one item to show.
+.file-preview-list-single {
+    grid-template-columns: 1fr;
+
+    .file-preview-thumb {
+        aspect-ratio: 16 / 9;
+    }
+}
+
+.file-preview-item {
+    position: relative;
+    border: 2px solid var(--bs-border-color-translucent);
+    border-radius: .5rem;
+    padding: .35rem;
+    text-align: center;
+    background-color: var(--bs-body-bg);
+
+    &.file-preview-item-error {
+        border-color: var(--bs-danger);
+    }
+}
+
+.file-preview-thumb {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: .35rem;
+    overflow: hidden;
+    background-color: var(--bs-secondary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    line-height: 0;
+    color: var(--bs-secondary-color);
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    i {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1em;
+        height: 1em;
+        line-height: 1;
+    }
+}
+
+.file-preview-name {
+    font-size: .75rem;
+    margin-top: .35rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-preview-size {
+    font-size: .6875rem;
+    color: var(--bs-secondary-color);
+}
+
+.file-preview-error {
+    font-size: .6875rem;
+    color: var(--bs-danger);
+}
+
+// Dark, semi-opaque circles so the icon stays legible over any thumbnail
+// (photo, screenshot, plain background...), with a colored hover state.
+.file-preview-action {
+    position: absolute;
+    top: .35rem;
+    right: .35rem;
+    z-index: 1;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+    background-color: rgba(0, 0, 0, .55);
+    color: #fff;
+    font-size: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+    transition: background-color .15s;
+}
+
+.file-preview-action-start {
+    left: .35rem;
+    right: auto;
+}
+
+.file-preview-remove {
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--bs-danger);
+    }
+}
+
+.file-preview-see:hover,
+.file-preview-see:focus-visible {
+    background-color: var(--bs-primary);
+}
+
 .dropzone-wrapper {
     border: 1.5px dashed var(--bs-border-color);
     border-radius: var(--bs-border-radius);
@@ -10,16 +150,6 @@
         background-color: rgba(var(--bs-primary-rgb), .04);
     }
 
-    &.is-invalid {
-        border-color: var(--bs-danger);
-    }
-
-    &.dropzone-disabled {
-        opacity: .6;
-        pointer-events: none;
-        background-color: var(--bs-secondary-bg);
-    }
-
     &.dragover .dropzone-icon {
         transform: translateY(-3px);
         color: var(--bs-primary);
@@ -30,10 +160,6 @@
     padding: 2rem 1rem;
     text-align: center;
     cursor: pointer;
-}
-
-.dropzone-disabled .dropzone-area {
-    cursor: not-allowed;
 }
 
 .dropzone-icon {
@@ -57,61 +183,4 @@
     font-size: .75rem;
     color: var(--bs-secondary-color);
     margin-bottom: .75rem;
-}
-
-.dropzone-files {
-    border-top: 1px solid var(--bs-border-color);
-    padding: .5rem .75rem;
-}
-
-.dropzone-file-item {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .375rem 0;
-    font-size: .8125rem;
-    color: var(--bs-body-color);
-}
-
-.dropzone-file-item + .dropzone-file-item {
-    border-top: 1px solid var(--bs-border-color-translucent);
-}
-
-.dropzone-file-icon {
-    color: var(--bs-secondary-color);
-    flex-shrink: 0;
-}
-
-.dropzone-file-name {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.dropzone-file-size {
-    color: var(--bs-secondary-color);
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-
-.dropzone-file-remove {
-    background: none;
-    border: none;
-    padding: 0 2px;
-    line-height: 1;
-    color: var(--bs-secondary-color);
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: color .15s;
-}
-
-.dropzone-file-remove:hover {
-    color: var(--bs-danger);
-}
-
-.dropzone-file-error {
-    color: var(--bs-danger);
-    font-size: .75rem;
-    margin-left: auto;
 }

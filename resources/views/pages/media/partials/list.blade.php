@@ -10,7 +10,7 @@
         <td><img src="/api/files/{{ $previewImgId }}/micro" alt=""></td>
         <td>{{ $media->name }}</td>
         <td class="text-end">
-            <div class="btn-group" role="group">
+            <fieldset class="btn-group">
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('gingerminds-media-manager.medias.edit', $media) }}">
                     <i class="bi bi-pencil-square"></i>
                 </a>
@@ -24,7 +24,7 @@
                 >
                     <i class="bi-i bi-trash"></i>
                 </button>
-            </div>
+            </fieldset>
         </td>
     </tr>
 @endforeach
