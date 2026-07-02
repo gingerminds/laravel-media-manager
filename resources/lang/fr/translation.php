@@ -11,7 +11,8 @@ return [
                 'dropzone_for' => 'Zone de dépôt pour',
                 'per_file' => 'Par fichier',
                 'select_file' => 'Fichier sélectionné',
-                'select_files' => 'Fichiers sélectionnés'
+                'select_files' => 'Fichiers sélectionnés',
+                'too_large' => 'Fichier trop volumineux'
             ]
         ],
         'validation' => [

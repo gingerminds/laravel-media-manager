@@ -51,6 +51,9 @@
     <section
             class="dropzone-wrapper @error($id) is-invalid @enderror {{ $disabled ? 'dropzone-disabled' : '' }}"
             id="{{ $id }}-dropzone"
+            data-max-size="{{ $maxSize }}"
+            data-label-too-large="@lang('gingerminds-media-manager::translation.form.message.file.too_large')"
+            data-label-remove="@lang('gingerminds-core::translation.action.remove')"
             aria-label="@lang('gingerminds-media-manager::translation.form.message.file.dropzone_for') {{ $label }}"
     >
         {{-- Input caché --}}

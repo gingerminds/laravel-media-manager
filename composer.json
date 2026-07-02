@@ -14,8 +14,8 @@
         }
     ],
     "require": {
-        "php": "^8.3",
-        "gingerminds/laravel-core": "^2.6 || dev-develop",
+        "php": "^8.4",
+        "gingerminds/laravel-core": "^2.8 || dev-develop",
         "league/glide": "^4.0",
       "ext-zip": "*"
     },

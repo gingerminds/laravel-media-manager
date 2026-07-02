@@ -6,6 +6,7 @@ namespace Gingerminds\LaravelMediaManager\Http\Controllers\Basket;
 
 use Gingerminds\LaravelMediaManager\Exceptions\ZipArchiveException;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
+use Gingerminds\LaravelMediaManager\Models\Media\Media;
 use Gingerminds\LaravelMediaManager\Repositories\Basket\BasketRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Gate;
@@ -77,6 +78,9 @@ class BasketDownloadController
         }
     }
 
+    /**
+     * @return Collection<int, Media>
+     */
     private function getMediasOrFail(Basket $basket): Collection
     {
         $medias = $basket->medias;
@@ -100,6 +104,7 @@ class BasketDownloadController
     }
 
     /**
+     * @param Collection<int, Media> $medias
      * @return array{0: int, 1: array<int, string>}
      */
     private function addMediaFilesToZip(ZipArchive $zip, Collection $medias, string $mediaDisk): array

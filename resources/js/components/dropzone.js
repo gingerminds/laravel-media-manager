@@ -24,6 +24,8 @@ function initDropzone(wrapperId) {
     const fileList = document.getElementById(baseId + '-files');
     const maxMb    = parseFloat(wrapper.dataset.maxSize || 10);
     const multiple = input.multiple;
+    const labelTooLarge = wrapper.dataset.labelTooLarge || 'File too large';
+    const labelRemove   = wrapper.dataset.labelRemove || 'Remove';
 
     let selectedFiles = [];
 
@@ -46,8 +48,8 @@ function initDropzone(wrapperId) {
                 '<i class="bi ' + getFileIcon(file.type) + ' dropzone-file-icon" aria-hidden="true"></i>' +
                 '<span class="dropzone-file-name" title="' + file.name + '">' + file.name + '</span>' +
                 '<span class="dropzone-file-size">' + formatSize(file.size) + '</span>' +
-                (tooBig ? '<span class="dropzone-file-error" role="alert">Trop volumineux</span>' : '') +
-                '<button type="button" class="dropzone-file-remove" data-index="' + index + '" aria-label="Retirer ' + file.name + '">' +
+                (tooBig ? '<span class="dropzone-file-error" role="alert">' + labelTooLarge + '</span>' : '') +
+                '<button type="button" class="dropzone-file-remove" data-index="' + index + '" aria-label="' + labelRemove + ' ' + file.name + '">' +
                 '<i class="bi bi-x" aria-hidden="true"></i></button>';
             fileList.appendChild(li);
         });
