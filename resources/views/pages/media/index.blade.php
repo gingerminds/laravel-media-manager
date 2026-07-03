@@ -35,6 +35,7 @@
     $columns = [
         ['name' => '', 'sortable' => false],
         ['name' => __('gingerminds-core::translation.form.name'), 'sortable' => true, 'property' => 'name'],
+        ['name' => __('gingerminds-media-manager::translation.media_categories.name_s'), 'sortable' => true, 'property' => 'mediaCategory.code'],
         ['name' => __('gingerminds-core::translation.actions'), 'sortable' => false],
     ];
     $sortBy = request()->query('sortBy');

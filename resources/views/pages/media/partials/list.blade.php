@@ -9,6 +9,7 @@
         @endphp
         <td><img src="/api/files/{{ $previewImgId }}/micro" alt=""></td>
         <td>{{ $media->name }}</td>
+        <td>{{ $media->mediaCategory?->name }}</td>
         <td class="text-end">
             <fieldset class="btn-group">
                 <a class="btn btn-sm btn-outline-primary" href="{{ route('gingerminds-media-manager.medias.edit', $media) }}">
