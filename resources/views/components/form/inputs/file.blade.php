@@ -1,5 +1,6 @@
 @props([
     'id',
+    'name' => null,
     'label',
     'size' => null,
     'required' => true,
@@ -68,6 +69,16 @@
         : ($existingFilePath ? Storage::url($existingFilePath) : null);
 
     $modalId = $id . '-modal';
+    $inputName = $name ?? $id;
+
+    // Building "<name>_remove" naively breaks bracket-style names: appending
+    // "_remove" after a closing "]" (e.g. "translations[1][thumbnail]_remove")
+    // gets silently truncated by PHP's request parser back down to
+    // "translations[1][thumbnail]", colliding with the file field itself.
+    // The suffix has to live *inside* the last bracket segment instead.
+    $removeInputName = preg_match('/^(.*)\[([^\[\]]+)\]$/', $inputName, $matches)
+        ? $matches[1] . '[' . $matches[2] . '_remove]'
+        : $inputName . '_remove';
 @endphp
 
 <div class="{{ $sizeClass }}">
@@ -96,7 +107,7 @@
         <input
                 type="file"
                 id="{{ $id }}"
-                name="{{ $id }}{{ $multiple ? '[]' : '' }}"
+                name="{{ $inputName }}{{ $multiple ? '[]' : '' }}"
                 class="file-input visually-hidden"
                 @if($accept) accept="{{ $accept }}" @endif
                 @if($multiple) multiple @endif
@@ -107,7 +118,7 @@
         />
 
         {{-- Flag envoyé au serveur quand un fichier déjà existant est supprimé sans être remplacé --}}
-        <input type="hidden" name="{{ $id }}_remove" value="0" id="{{ $id }}-remove-flag">
+        <input type="hidden" name="{{ $removeInputName }}" value="0" id="{{ $id }}-remove-flag">
 
         {{-- Aperçu des fichiers existants / sélectionnés --}}
         @if($preview)
