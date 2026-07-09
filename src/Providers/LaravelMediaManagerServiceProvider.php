@@ -38,6 +38,20 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
     {
         $this->app->register(LaravelMediaManagerAuthServiceProvider::class);
 
+        $this->mergeConfigFrom(
+            __DIR__ . '/../../config/gingerminds-media-manager.php',
+            'gingerminds-media-manager'
+        );
+
+        $this->mergeConfigFrom(
+            __DIR__ . '/../../config/filesystems.php',
+            'gingerminds-media-manager-filesystems'
+        );
+
+        config([
+            'filesystems.disks.glide' => config('gingerminds-media-manager-filesystems.disks.glide'),
+        ]);
+
         $this->app->bind(
             MediaController::class,
             ResourceResolver::controller('media')
@@ -79,20 +93,6 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
             MediaCategoryRequest::class,
             ResourceResolver::request('media_category')
         );
-
-        $this->mergeConfigFrom(
-            __DIR__ . '/../../config/gingerminds-media-manager.php',
-            'gingerminds-media-manager'
-        );
-
-        $this->mergeConfigFrom(
-            __DIR__ . '/../../config/filesystems.php',
-            'gingerminds-media-manager-filesystems'
-        );
-
-        config([
-            'filesystems.disks.glide' => config('gingerminds-media-manager-filesystems.disks.glide'),
-        ]);
 
         $this->tagClassesFromPath(
             __DIR__ . '/../ApiProvider',
