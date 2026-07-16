@@ -195,6 +195,20 @@ function initFileField(fieldId) {
     renderFiles();
 }
 
-document.querySelectorAll('[id$="-field"]').forEach(function (el) {
-    initFileField(el.id);
-});
+// `scope` defaults to the whole document (initial page load, unchanged
+// behavior) but can be a specific container to (re-)scan after ajax-injected
+// markup — the block canvas's edit modal (add-block.js) does this for its
+// `file` type fields, the same way it already does for wysiwyg fields.
+// Guarded by a dataset flag so re-scanning an already-initialized field
+// (e.g. a fragment re-rendered without a full page reload) is a no-op.
+export function initFileFields(scope = document) {
+    scope.querySelectorAll('[id$="-field"]').forEach(function (el) {
+        if (el.dataset.fileFieldInit) {
+            return;
+        }
+        el.dataset.fileFieldInit = '1';
+        initFileField(el.id);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => initFileFields());
