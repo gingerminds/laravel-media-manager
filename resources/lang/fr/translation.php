@@ -64,5 +64,7 @@ return [
         'selected_count_label' => 'Sélectionnés :',
         'confirm' => 'Valider',
         'remove' => 'Retirer',
+        'all_languages' => 'Toutes les langues',
+        'no_languages' => 'Aucune',
     ]
 ];
