@@ -14,6 +14,7 @@
     'endpoint' => '/api/media',
     'categoryEndpoint' => '/api/media-categories',
     'perPage' => 24,
+    'languages' => null,
 ])
 
 @php
@@ -53,6 +54,21 @@
      *       :multiple="true"
      *       :category-codes="['picture', 'movie']"
      *   />
+     *
+     * The package itself has no notion of "language": whether a media has any
+     * language association is entirely project-specific. This is why the field
+     * never resolves this on its own — it only displays a language hint when the
+     * caller explicitly passes the full universe of ISO codes via `languages`:
+     *   - not set / empty (default): unchanged behavior, no language info shown.
+     *   - set: each media in the results/preview shows, next to its name, either
+     *     the list of its ISO codes, "All languages" if it is attached to every
+     *     code in `languages`, or "None" if it isn't attached to any. This
+     *     requires the resolved Media model to expose a `language_isos` API
+     *     property (array of ISO codes), which is a project-level concern.
+     *   <x-gingerminds-media-manager::form.inputs.media-select
+     *       ...
+     *       :languages="$allLanguageIsos"
+     *   />
      */
 
     $fieldName = $name ?? $id;
@@ -77,6 +93,8 @@
             'name' => (string) ($media->name ?? ''),
             'thumbnail_reference' => $media->thumbnail_reference ?? null,
             'file_reference' => $media->file_reference ?? null,
+            // Only populated when the resolved Media model exposes it (project-specific, see doc block above).
+            'language_isos' => $media->language_isos ?? [],
         ];
     };
 
@@ -86,6 +104,26 @@
     $thumbUrl = static function (array $item) use ($isUuid): ?string {
         $ref = $item['thumbnail_reference'] ?: $item['file_reference'];
         return $isUuid($ref) ? "/api/files/{$ref}/thumbnail" : null;
+    };
+
+    // Universe of ISO codes the caller wants medias checked against (optional,
+    // see the doc block above). Not set/empty: language info stays hidden.
+    $languageUniverse = array_values(array_filter($languages ?? []));
+
+    $languageLabel = static function (array $isos) use ($languageUniverse): ?string {
+        if (empty($languageUniverse)) {
+            return null;
+        }
+
+        if (empty($isos)) {
+            return __('gingerminds-media-manager::translation.media_select.no_languages');
+        }
+
+        if (count(array_intersect($isos, $languageUniverse)) >= count($languageUniverse)) {
+            return __('gingerminds-media-manager::translation.media_select.all_languages');
+        }
+
+        return strtoupper(implode(', ', $isos));
     };
 
     $selectedItems = collect($multiple ? ($selected ?? []) : array_filter([$normalizeItem($selected)]))
@@ -129,10 +167,13 @@
         'lockCategory' => $lockCategory,
         'allowedCategoryIds' => $allowedCategoryIds,
         'perPage' => (int) $perPage,
+        'languages' => $languageUniverse,
         'i18n' => [
             'empty' => __('gingerminds-media-manager::translation.media_select.no_results'),
             'error' => __('gingerminds-media-manager::translation.media_select.error'),
             'noSelection' => __('gingerminds-media-manager::translation.media_select.no_selection'),
+            'allLanguages' => __('gingerminds-media-manager::translation.media_select.all_languages'),
+            'noLanguages' => __('gingerminds-media-manager::translation.media_select.no_languages'),
         ],
     ];
 @endphp
@@ -156,7 +197,8 @@
             @forelse($selectedItems as $item)
                 <div class="media-select-chip" data-chip data-id="{{ $item['id'] }}" data-name="{{ $item['name'] }}"
                      data-thumb="{{ $item['thumbnail_reference'] ?? '' }}"
-                     data-file="{{ $item['file_reference'] ?? '' }}">
+                     data-file="{{ $item['file_reference'] ?? '' }}"
+                     data-languages="{{ implode(',', $item['language_isos'] ?? []) }}">
                     @if(!$disabled)
                         <button type="button" class="media-select-chip-remove" data-role="remove-chip"
                                 aria-label="@lang('gingerminds-media-manager::translation.media_select.remove')">
@@ -171,6 +213,9 @@
                         @endif
                     </div>
                     <div class="media-select-chip-name" title="{{ $item['name'] }}">{{ $item['name'] }}</div>
+                    @if($languageText = $languageLabel($item['language_isos'] ?? []))
+                        <div class="media-select-chip-languages">{{ $languageText }}</div>
+                    @endif
                 </div>
             @empty
                 <div class="media-select-empty text-muted small" data-role="empty-hint">

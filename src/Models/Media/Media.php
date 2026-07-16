@@ -134,9 +134,7 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
             return null;
         }
 
-        return $file->isImage()
-            ? (string) $file->id
-            : $file->path;
+        return (string) $file->id;
     }
 
     public function getFileSizeAttribute(): ?int
@@ -153,9 +151,7 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
             return null;
         }
 
-        return $file->isImage()
-            ? (string) $file->id
-            : $file->path;
+        return (string) $file->id;
     }
 
     public function getThumbnailSizeAttribute(): ?int

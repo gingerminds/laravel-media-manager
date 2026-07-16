@@ -8,6 +8,7 @@ use Gingerminds\LaravelMediaManager\Models\Media\Media;
 use Gingerminds\LaravelMediaManager\Repositories\Media\MediaCategoryRepository;
 use Gingerminds\LaravelMediaManager\Repositories\Media\MediaRepository;
 use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
+use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -20,6 +21,7 @@ class MediaController extends AbstractController
     public function __construct(
         protected readonly MediaRepository $repository,
         protected readonly MediaCategoryRepository $mediaCategoryRepository,
+        protected readonly FileUploadService $uploadService,
     ) {
     }
 
@@ -87,7 +89,14 @@ class MediaController extends AbstractController
     public function destroy(Media $media): RedirectResponse
     {
         $this->authorize('delete', $media);
+
+        $file      = $media->file;
+        $thumbnail = $media->thumbnail;
+
         $media->delete();
+
+        $this->uploadService->delete($file);
+        $this->uploadService->delete($thumbnail);
 
         return redirect()->route('gingerminds-media-manager.medias.index')
             ->with('success', __('gingerminds-core::translation.successfully_deleted', [

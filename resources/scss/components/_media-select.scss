@@ -100,6 +100,16 @@
     white-space: nowrap;
 }
 
+.media-select-item-languages,
+.media-select-chip-languages {
+    font-size: .65rem;
+    margin-top: .15rem;
+    color: #6c757d;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .media-select-item-check {
     position: absolute;
     top: .35rem;
