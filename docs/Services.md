@@ -20,6 +20,8 @@ public function __construct(
 
 Slugifies the original filename (keeping its extension), stores it on the configured disk under `$folder` (or the default folder from config), and creates the corresponding `File` row (`disk`, `path`, `mime_type`, `original_name`, `size`).
 
+`mime_type` is stored through `MimeTypeNormalizer::normalize()` first, not `$file->getMimeType()` directly: verbose formats (Office Open XML, legacy MS Office, OpenDocument) get rationalized into a short `application/<ext>` string (e.g. `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet` → `application/xlsx`) rather than storing the raw, standards-committee-length value. Anything not in its map passes through unchanged. Only applied at upload time — existing `File` rows keep whatever they were stored with until next replaced. `Media::file_type` (the API-exposed property, see `Media::getFileTypeAttribute()`) just proxies `$this->file?->mime_type`, so it reflects this rationalized value too — a breaking change in shape for any API consumer that was matching on the old raw mime type.
+
 Throws `Gingerminds\LaravelMediaManager\Exceptions\FileUploadException` if the underlying disk write fails.
 
 ### `replace(UploadedFile $file, ?File $existing, ?string $folder = null, ?callable $beforeDelete = null): File`

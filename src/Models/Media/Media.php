@@ -64,6 +64,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
     ]),
 )]
 #[ApiProperty(
+    property: 'file_type',
+    serialize: new Groups([
+        Media::GROUP_LIST,
+        Media::GROUP_READ,
+        Basket::GROUP_READ,
+    ]),
+)]
+#[ApiProperty(
     property: 'thumbnail_reference',
     serialize: new Groups([
         Media::GROUP_LIST,
@@ -140,6 +148,11 @@ class Media extends Model implements ResourceModelInterface, FilterableModelInte
     public function getFileSizeAttribute(): ?int
     {
         return $this->file?->size;
+    }
+
+    public function getFileTypeAttribute(): ?string
+    {
+        return $this->file?->mime_type;
     }
 
     public function getThumbnailReferenceAttribute(): ?string

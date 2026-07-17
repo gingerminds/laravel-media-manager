@@ -33,7 +33,7 @@ class FileUploadService
         return File::create([
             'disk'          => $this->disk,
             'path'          => $path,
-            'mime_type'     => $file->getMimeType() ?? 'application/octet-stream',
+            'mime_type'     => MimeTypeNormalizer::normalize($file->getMimeType() ?? 'application/octet-stream'),
             'original_name' => $file->getClientOriginalName(),
             'size'          => (int) $file->getSize(),
         ]);
