@@ -10,7 +10,9 @@ use Gingerminds\LaravelCore\Repositories\AbstractRepository;
 use Gingerminds\LaravelCore\Repositories\RepositoryInterface;
 use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
 use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 
 /**
@@ -22,6 +24,26 @@ class MediaCategoryRepository extends AbstractRepository implements RepositoryIn
     public function getModelClass(): string
     {
         return ResourceResolver::model('media_category');
+    }
+
+    /**
+     * Defaults the collection (including the headless API GetCollection) to
+     * manual `position` order, so every consumer — admin tree, category
+     * picker, API facets — sees the same order without each having to
+     * re-implement it. Left alone when an explicit ?sort=&sortBy= is given.
+     *
+     * @param  Builder<MediaCategory>  $query
+     * @return Builder<MediaCategory>
+     */
+    protected function initGetQueryBuilder(Builder $query, Request $request): Builder
+    {
+        $query = parent::initGetQueryBuilder($query, $request);
+
+        if (! $request->filled('sort') || ! $request->filled('sortBy')) {
+            $query->orderBy('position');
+        }
+
+        return $query;
     }
 
     public function update(
@@ -54,7 +76,7 @@ class MediaCategoryRepository extends AbstractRepository implements RepositoryIn
 
         return $modelClass::query()
             ->whereNull('parent_id')
-            ->orderBy('name')
+            ->orderBy('position')
             ->with('adminChildren')
             ->get();
     }
@@ -67,6 +89,6 @@ class MediaCategoryRepository extends AbstractRepository implements RepositoryIn
         /** @var class-string<MediaCategory> $modelClass */
         $modelClass = $this->getModelClass();
 
-        return $modelClass::query()->orderBy('name')->get();
+        return $modelClass::query()->orderBy('position')->get();
     }
 }

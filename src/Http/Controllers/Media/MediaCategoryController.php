@@ -3,12 +3,14 @@
 namespace Gingerminds\LaravelMediaManager\Http\Controllers\Media;
 
 use Gingerminds\LaravelCore\Http\Controllers\AbstractController;
+use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaCategoryReorderRequest;
 use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaCategoryRequest;
 use Gingerminds\LaravelMediaManager\Models\Media\MediaCategory;
 use Gingerminds\LaravelMediaManager\Repositories\Media\MediaCategoryRepository;
 use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -84,6 +86,26 @@ class MediaCategoryController extends AbstractController
                     . ' '
                     . ($mediaCategory->name ?? $mediaCategory->id),
             ]));
+    }
+
+    /**
+     * Persists a same-level (same parent_id) drag & drop reorder from the
+     * admin tree — see gingerminds-core::docs/Sorting.md, "Drag & drop
+     * reordering". Each Sortable.js level posts its own ordered id list plus
+     * that level's parent_id; re-parenting across levels isn't supported.
+     */
+    public function reorder(MediaCategoryReorderRequest $request): JsonResponse
+    {
+        $this->authorize('update', ResourceResolver::model('media_category'));
+
+        /** @var class-string<MediaCategory> $modelClass */
+        $modelClass = ResourceResolver::model('media_category');
+
+        foreach ($request->input('ids') as $position => $id) {
+            $modelClass::where('id', $id)->update(['position' => $position]);
+        }
+
+        return response()->json(['success' => true]);
     }
 
     public function destroy(MediaCategory $mediaCategory): RedirectResponse
