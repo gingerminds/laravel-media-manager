@@ -51,6 +51,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
     MediaCategory::GROUP_LIST,
     MediaCategory::GROUP_READ,
 ]))]
+#[ApiProperty(property: 'position', serialize: new Groups([
+    MediaCategory::GROUP_LIST,
+    MediaCategory::GROUP_READ,
+]))]
 #[ApiProperty(property: 'children', serialize: new Groups([
     MediaCategory::GROUP_READ,
 ]))]
@@ -65,6 +69,7 @@ class MediaCategory extends Model implements ResourceModelInterface
             'code',
             'name',
             'parent_id',
+            'position',
         ];
     }
 
@@ -77,11 +82,14 @@ class MediaCategory extends Model implements ResourceModelInterface
     }
 
     /**
+     * Ordered by position (manual, drag & drop ordering scoped to siblings —
+     * see MediaCategoryController::reorder()), not alphabetically.
+     *
      * @return HasMany<MediaCategory, $this>
      */
     public function children(): HasMany
     {
-        return $this->hasMany(MediaCategory::class, 'parent_id')->orderBy('name');
+        return $this->hasMany(MediaCategory::class, 'parent_id')->orderBy('position');
     }
 
     /**
@@ -91,7 +99,7 @@ class MediaCategory extends Model implements ResourceModelInterface
     {
         return $this
             ->hasMany(MediaCategory::class, 'parent_id')
-            ->orderBy('name')
+            ->orderBy('position')
             ->with('adminChildren');
     }
 }

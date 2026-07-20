@@ -34,6 +34,12 @@
     @endif
 @endsection
 
+@push('scripts')
+    <script>
+        window.treeReorderUrl = "{{ route('gingerminds-media-manager.media-categories.reorder') }}";
+    </script>
+@endpush
+
 @push('modals')
     <x-gingerminds-core::modal.modal-delete
         :model="__('gingerminds-media-manager::translation.media_categories.name_s')"

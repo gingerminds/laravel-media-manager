@@ -13,6 +13,10 @@ Route::middleware(['web', 'gingerminds-core.auth'])
             'medias',
             ResourceResolver::controller('media')
         );
+        Route::post(
+            'media-categories/reorder',
+            [ResourceResolver::controller('media_category'), 'reorder']
+        )->name('media-categories.reorder');
         Route::resource(
             'media-categories',
             ResourceResolver::controller('media_category')

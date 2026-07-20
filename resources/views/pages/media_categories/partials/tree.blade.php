@@ -8,6 +8,9 @@
         <div class="sortable-item" data-item-id="{{ $item->id }}">
             <div class="tree-item-row d-flex align-items-center justify-content-between py-2 px-3">
                 <div class="d-flex align-items-center gap-2">
+                    <span class="drag-handle text-muted" style="cursor: grab;" title="">
+                        <i class="bi bi-grip-vertical"></i>
+                    </span>
                     @if($depth > 0)
                         <span class="tree-connector text-muted">
                             <i class="bi bi-arrow-return-right"></i>
