@@ -24,6 +24,15 @@ class FileUploadService
         $basename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $safeName  = str($basename)->slug()->toString() . ($extension !== '' ? '.' . $extension : '');
 
+        // Read before storeAs() moves/streams the file away — normalize()
+        // needs a still-existing real path to double-check an OOXML-flavored
+        // mime guess (see MimeTypeNormalizer), and getMimeType() itself
+        // re-detects from that path on every call rather than caching it.
+        $mimeType = MimeTypeNormalizer::normalize(
+            $file->getMimeType() ?? 'application/octet-stream',
+            $file->getRealPath() ?: null,
+        );
+
         $path = $file->storeAs($folder ?? $this->folder, $safeName, $this->disk);
 
         if ($path === false) {
@@ -33,7 +42,7 @@ class FileUploadService
         return File::create([
             'disk'          => $this->disk,
             'path'          => $path,
-            'mime_type'     => MimeTypeNormalizer::normalize($file->getMimeType() ?? 'application/octet-stream'),
+            'mime_type'     => $mimeType,
             'original_name' => $file->getClientOriginalName(),
             'size'          => (int) $file->getSize(),
         ]);
