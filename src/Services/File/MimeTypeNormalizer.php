@@ -21,6 +21,17 @@ namespace Gingerminds\LaravelMediaManager\Services\File;
  * already-short types...) passes through unchanged. Only applied at upload
  * time (`FileUploadService::store()`) — existing `File` rows keep whatever
  * raw mime type they were stored with until next replaced.
+ *
+ * Office Open XML formats *are* zip archives, and libmagic/finfo — what
+ * `UploadedFile::getMimeType()` actually uses under the hood — detects them
+ * by peeking at the zip's internal file listing rather than fully validating
+ * it. A plain, unrelated `.zip` upload can occasionally still trip that
+ * heuristic and come back labelled e.g. `...spreadsheetml.sheet`, which this
+ * class would otherwise happily rubber-stamp as `application/xlsx`. When a
+ * `$realPath` is given, we double-check for the one file every OOXML variant
+ * actually requires (`OOXML_MARKERS`) before trusting the MAP entry, and
+ * fall back to `application/zip` if it's missing — a real xlsx/docx/pptx
+ * always has its marker, a generic zip essentially never does.
  */
 class MimeTypeNormalizer
 {
@@ -48,8 +59,72 @@ class MimeTypeNormalizer
         'application/vnd.oasis.opendocument.presentation' => 'application/odp',
     ];
 
-    public static function normalize(string $mimeType): string
+    /**
+     * Zip entry that must exist for the corresponding OOXML mime type in
+     * MAP to be trusted — see class docblock. Legacy MS Office (OLE
+     * Compound File, not a zip) and OpenDocument (a zip, but not one
+     * libmagic tends to misfire on the same way) aren't included: this is
+     * specifically the false-positive libmagic is prone to.
+     *
+     * @var array<string, string>
+     */
+    private const OOXML_MARKERS = [
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'   => 'word/document.xml',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.template'   => 'word/document.xml',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'         => 'xl/workbook.xml',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.template'      => 'xl/workbook.xml',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'ppt/presentation.xml',
+        'application/vnd.openxmlformats-officedocument.presentationml.template'     => 'ppt/presentation.xml',
+        'application/vnd.openxmlformats-officedocument.presentationml.slideshow'    => 'ppt/presentation.xml',
+    ];
+
+    /**
+     * @param string $mimeType The mime type as reported by the upstream
+     *                          detector (`UploadedFile::getMimeType()`).
+     * @param string|null $realPath Local path to the actual file, used to
+     *                          verify an OOXML-flavored $mimeType before
+     *                          trusting it (see class docblock). Pass null
+     *                          to skip verification (e.g. path unavailable).
+     */
+    public static function normalize(string $mimeType, ?string $realPath = null): string
     {
+        if ($realPath !== null && isset(self::OOXML_MARKERS[$mimeType])) {
+            $hasMarker = self::zipHasEntry($realPath, self::OOXML_MARKERS[$mimeType]);
+
+            if ($hasMarker === false) {
+                // Confirmed openable as a zip, just without the marker file
+                // the claimed OOXML flavor requires — a generic zip
+                // libmagic's heuristic mistook for e.g. an xlsx.
+                return 'application/zip';
+            }
+
+            if ($hasMarker === null) {
+                // Not even openable as a zip, so the upstream mime type
+                // guess is unreliable either way — leave it untouched
+                // rather than mapping it to something we can't back up.
+                return $mimeType;
+            }
+        }
+
         return self::MAP[$mimeType] ?? $mimeType;
+    }
+
+    /**
+     * @return bool|null True if $entry is present, false if $path opens as
+     *                    a zip but doesn't have it, null if $path can't be
+     *                    opened as a zip at all.
+     */
+    private static function zipHasEntry(string $path, string $entry): ?bool
+    {
+        $zip = new \ZipArchive();
+
+        if ($zip->open($path) !== true) {
+            return null;
+        }
+
+        $found = $zip->locateName($entry) !== false;
+        $zip->close();
+
+        return $found;
     }
 }
