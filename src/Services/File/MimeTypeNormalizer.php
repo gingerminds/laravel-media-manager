@@ -61,6 +61,13 @@ class MimeTypeNormalizer
         'application/vnd.oasis.opendocument.presentation' => 'application/odp',
     ];
 
+    // One marker per OOXML *document kind* (Word/Excel/PowerPoint), reused
+    // below across that kind's several mime types (document vs. template
+    // vs. slideshow...) instead of repeating each path as a literal.
+    private const MARKER_WORD       = 'word/document.xml';
+    private const MARKER_EXCEL      = 'xl/workbook.xml';
+    private const MARKER_POWERPOINT = 'ppt/presentation.xml';
+
     /**
      * Zip entry that must exist for the corresponding OOXML mime type in
      * MAP to be trusted — see class docblock. Legacy MS Office (OLE
@@ -71,13 +78,13 @@ class MimeTypeNormalizer
      * @var array<string, string>
      */
     private const OOXML_MARKERS = [
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'   => 'word/document.xml',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.template'   => 'word/document.xml',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'         => 'xl/workbook.xml',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.template'      => 'xl/workbook.xml',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'ppt/presentation.xml',
-        'application/vnd.openxmlformats-officedocument.presentationml.template'     => 'ppt/presentation.xml',
-        'application/vnd.openxmlformats-officedocument.presentationml.slideshow'    => 'ppt/presentation.xml',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'   => self::MARKER_WORD,
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.template'   => self::MARKER_WORD,
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'         => self::MARKER_EXCEL,
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.template'      => self::MARKER_EXCEL,
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation' => self::MARKER_POWERPOINT,
+        'application/vnd.openxmlformats-officedocument.presentationml.template'     => self::MARKER_POWERPOINT,
+        'application/vnd.openxmlformats-officedocument.presentationml.slideshow'    => self::MARKER_POWERPOINT,
     ];
 
     /**
