@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Services\File;
 
+use ZipArchive;
+
 /**
  * Rationalizes verbose, standards-committee-length mime types — mainly
  * Office Open XML, legacy MS Office, and OpenDocument formats — into short
@@ -116,7 +118,7 @@ class MimeTypeNormalizer
      */
     private static function zipHasEntry(string $path, string $entry): ?bool
     {
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
 
         if ($zip->open($path) !== true) {
             return null;
