@@ -67,8 +67,14 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
 
             $resourceModel->file()->associate($file);
         } elseif ($request->boolean('file_remove') && $resourceModel->file !== null) {
-            $this->uploadService->delete($resourceModel->file);
+            // Dissociate and persist the FK change *before* deleting the old
+            // file row: `medias.file_id` cascades on delete, so deleting the
+            // file while the DB row still references it would cascade-delete
+            // this media itself.
+            $oldFile = $resourceModel->file;
             $resourceModel->file()->dissociate();
+            $resourceModel->save();
+            $this->uploadService->delete($oldFile);
         }
 
         if ($uploadedThumbnail !== null) {
@@ -87,8 +93,13 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
 
             $resourceModel->thumbnail()->associate($file);
         } elseif ($request->boolean('thumbnail_remove') && $resourceModel->thumbnail !== null) {
-            $this->uploadService->delete($resourceModel->thumbnail);
+            // Same reasoning as the `file_remove` branch above: dissociate
+            // and save before deleting, to avoid the cascade wiping out
+            // the parent media row.
+            $oldThumbnail = $resourceModel->thumbnail;
             $resourceModel->thumbnail()->dissociate();
+            $resourceModel->save();
+            $this->uploadService->delete($oldThumbnail);
         }
 
         $resourceModel->save();
