@@ -8,7 +8,10 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use Gingerminds\LaravelCore\Models\CacheableResourceInterface;
+use Gingerminds\LaravelCore\Models\CacheCascadeInterface;
 use Gingerminds\LaravelCore\Models\ResourceModelInterface;
+use Gingerminds\LaravelCore\Models\Trait\CacheableResourceTrait;
 use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaCategoryProvider;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,10 +61,29 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiProperty(property: 'children', serialize: new Groups([
     MediaCategory::GROUP_READ,
 ]))]
-class MediaCategory extends Model implements ResourceModelInterface
+class MediaCategory extends Model implements ResourceModelInterface, CacheableResourceInterface, CacheCascadeInterface
 {
+    use CacheableResourceTrait;
+
     public const string GROUP_LIST = 'media_categories:list';
     public const string GROUP_READ = 'media_categories:read';
+
+    public static function getCacheKey(): string
+    {
+        return 'media_category';
+    }
+
+    /**
+     * `code`/`name` are embeddable in a Media's serialized `media_category`
+     * (see Media::mediaCategory()), so a category save must also invalidate
+     * `media`, not just its own cache.
+     *
+     * @return array<int, string>
+     */
+    public static function getCascadeCacheKeys(): array
+    {
+        return ['media'];
+    }
 
     public function getFillable(): array
     {

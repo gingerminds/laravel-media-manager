@@ -8,9 +8,13 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use Gingerminds\LaravelCore\Models\CacheableResourceInterface;
+use Gingerminds\LaravelCore\Models\EagerLoadableModelInterface;
 use Gingerminds\LaravelCore\Models\FilterableModelInterface;
 use Gingerminds\LaravelCore\Models\ResourceModelInterface;
 use Gingerminds\LaravelCore\Models\SearchableModelInterface;
+use Gingerminds\LaravelCore\Models\Trait\CacheableResourceTrait;
+use Gingerminds\LaravelCore\Models\Trait\EagerLoadableModelTrait;
 use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaProvider;
 use Gingerminds\LaravelMediaManager\Models\Basket\Basket;
 use Gingerminds\LaravelMediaManager\Models\File\File;
@@ -87,12 +91,39 @@ use Symfony\Component\Serializer\Attribute\Groups;
         Basket::GROUP_READ,
     ]),
 )]
-class Media extends Model implements ResourceModelInterface, FilterableModelInterface, SearchableModelInterface
+class Media extends Model implements
+    ResourceModelInterface,
+    FilterableModelInterface,
+    SearchableModelInterface,
+    EagerLoadableModelInterface,
+    CacheableResourceInterface
 {
+    use CacheableResourceTrait;
+    use EagerLoadableModelTrait;
+
     protected $table = 'medias';
 
     public const string GROUP_LIST = 'media:list';
     public const string GROUP_READ = 'media:read';
+
+    /**
+     * `file`/`thumbnail` back the file_reference/file_size/file_type and
+     * thumbnail_reference/thumbnail_size accessors below, each serialized in
+     * GROUP_LIST/GROUP_READ — every row would otherwise trigger two extra
+     * queries on every listing. `mediaCategory` is embedded whenever a
+     * project chooses to serialize it (see the app-level override).
+     *
+     * @return array<int, string>
+     */
+    public static function getEagerLoads(): array
+    {
+        return ['file', 'thumbnail', 'mediaCategory'];
+    }
+
+    public static function getCacheKey(): string
+    {
+        return 'media';
+    }
 
     protected $fillable = [
         'name',
