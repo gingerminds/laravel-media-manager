@@ -27,6 +27,9 @@ class ImageProcessor
             'cache_path_prefix' => '.cache',
             'driver'            => 'imagick',
             'presets'           => config('gingerminds-media-manager.presets', []),
+            'defaults'          => [
+                'fm' => config('gingerminds-media-manager.default_format', 'webp'),
+            ],
         ]);
     }
 
