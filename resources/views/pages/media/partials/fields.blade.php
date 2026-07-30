@@ -14,6 +14,7 @@
                         id="file"
                         :label="__('gingerminds-media-manager::translation.form.file')"
                         accept="image/*,.pdf,.xlsx,video/mp4,.zip,application/zip"
+                        :max-size="round(config('gingerminds-media-manager.max_file_size') / 1024, 1)"
                         :existing-file="isset($media) ? $media->file : null"
                 />
                 <x-gingerminds-media-manager::form.inputs.file
@@ -21,6 +22,7 @@
                         :label="__('gingerminds-media-manager::translation.form.thumbnail')"
                         accept="image/*"
                         :required="false"
+                        :max-size="round(config('gingerminds-media-manager.max_thumbnail_size') / 1024, 1)"
                         :existing-file="isset($media) ? $media->thumbnail : null"
                 />
             </div>

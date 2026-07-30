@@ -24,13 +24,13 @@ class MediaRequest extends FormRequest implements FormRequestInterface
                 $fileRequired ? 'required' : 'nullable',
                 'file',
                 'mimes:jpeg,png,jpg,gif,svg,zip,xlsx,pdf',
-                'max:5096',
+                'max:' . config('gingerminds-media-manager.max_file_size', 5096),
             ],
             'thumbnail' => [
                 'nullable',
                 'file',
                 'mimes:jpeg,png,jpg',
-                'max:5096',
+                'max:' . config('gingerminds-media-manager.max_thumbnail_size', 5096),
             ],
         ];
     }
