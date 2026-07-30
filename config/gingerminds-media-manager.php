@@ -40,6 +40,10 @@ return [
     'disk'   => env('MEDIA_MANAGER_DISK', 'public'),
     'folder' => env('MEDIA_MANAGER_FOLDER', 'uploads'),
 
+    // Taille max en Ko (kilobytes), utilisée par la règle de validation Laravel "max".
+    'max_file_size'      => env('MEDIA_MANAGER_MAX_FILE_SIZE', 5096),
+    'max_thumbnail_size' => env('MEDIA_MANAGER_MAX_THUMBNAIL_SIZE', 5096),
+
     'presets' => [
         'micro' => ['w' => 25, 'h' => 25, 'fit' => 'crop',    'q' => 70],
         'thumbnail' => ['w' => 150, 'h' => 150, 'fit' => 'crop',    'q' => 80],
