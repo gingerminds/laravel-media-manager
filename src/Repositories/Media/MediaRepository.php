@@ -102,6 +102,10 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
             $this->uploadService->delete($oldThumbnail);
         }
 
+        $resourceModel->fill([
+            'media_category_id' => $request->input('media_category_id'),
+        ]);
+
         $resourceModel->save();
         return $resourceModel;
     }

@@ -4,6 +4,7 @@ return [
     'form' => [
         'file' => 'Fichier',
         'thumbnail' => 'Miniature',
+        'media_category' => 'Catégorie',
         'message' => [
             'file' => [
                 'your_file' => 'Votre fichier',
