@@ -79,6 +79,33 @@ public function clear(File $file): void
 
 Deletes the cached, resized variants of a given file. Called automatically by `FileUploadService::delete()`/`replace()` whenever a file is removed or replaced, so you don't usually need to call this yourself — it's exposed mainly for cases where you manage a `File`'s lifecycle outside of `FileUploadService`.
 
+```php
+public function clearAll(string $disk): void
+```
+
+Deletes the entire Glide cache directory (every preset variant, for every file) on the given disk. Used by the `media-manager:cache:clear` command below.
+
+### `media-manager:cache:clear` command
+
+The Glide cache (`.cache/` on the disk configured in `gingerminds-media-manager.disk`) has no built-in expiration — this command lets you purge it manually or on a schedule you control:
+
+```bash
+# Purge the whole cache, across every disk any File row uses (asks for confirmation)
+php artisan media-manager:cache:clear
+
+# Skip the confirmation prompt (e.g. non-interactive/CI use)
+php artisan media-manager:cache:clear --force
+
+# Only clear the cache for specific Media ids (their file + thumbnail)
+php artisan media-manager:cache:clear --media=1 --media=2
+```
+
+The package does not schedule this command itself — add it to your own app's scheduler (e.g. `routes/console.php`) if you want periodic purges:
+
+```php
+Schedule::command('media-manager:cache:clear --force')->weekly();
+```
+
 ## `MediaCollectionSyncer`
 
 `Gingerminds\LaravelMediaManager\Services\Media\MediaCollectionSyncer`

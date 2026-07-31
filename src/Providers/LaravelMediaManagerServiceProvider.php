@@ -10,6 +10,7 @@ use ApiPlatform\State\ProviderInterface;
 use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaCategoryProvider;
 use Gingerminds\LaravelMediaManager\ApiProvider\Media\MediaProvider;
 use Gingerminds\LaravelMediaManager\Auth\BasketLoginResponseEnricher;
+use Gingerminds\LaravelMediaManager\Console\Commands\ClearGlideCacheCommand;
 use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaCategoryController;
 use Gingerminds\LaravelMediaManager\Http\Controllers\Media\MediaController;
 use Gingerminds\LaravelMediaManager\Http\Requests\Media\MediaCategoryRequest;
@@ -172,6 +173,10 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
                 __DIR__ . '/../../resources/scss' => resource_path('scss/vendor/gingerminds-media-manager'),
                 __DIR__ . '/../../resources/js'   => resource_path('js/vendor/gingerminds-media-manager'),
             ], 'gingerminds-assets');
+
+            $this->commands([
+                ClearGlideCacheCommand::class,
+            ]);
         }
     }
 

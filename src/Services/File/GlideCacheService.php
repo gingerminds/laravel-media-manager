@@ -7,13 +7,24 @@ use Illuminate\Support\Facades\Storage;
 
 class GlideCacheService
 {
+    public const string CACHE_PREFIX = '.cache';
+
     public function clear(File $file): void
     {
         $disk     = Storage::disk($file->disk);
-        $cacheDir = '.cache/' . $file->path;
+        $cacheDir = self::CACHE_PREFIX . '/' . $file->path;
 
         if ($disk->exists($cacheDir)) {
             $disk->deleteDirectory($cacheDir);
+        }
+    }
+
+    public function clearAll(string $disk): void
+    {
+        $storage = Storage::disk($disk);
+
+        if ($storage->exists(self::CACHE_PREFIX)) {
+            $storage->deleteDirectory(self::CACHE_PREFIX);
         }
     }
 }

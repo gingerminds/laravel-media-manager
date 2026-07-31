@@ -54,7 +54,10 @@ class MediaController extends AbstractController
         /** @var view-string $view */
         $view = 'gingerminds-media-manager::pages.media.edit';
 
-        return view($view, ['media' => $media]);
+        return view($view, [
+            'media'      => $media,
+            'categories' => $this->mediaCategoryRepository->getAllForSelect(),
+        ]);
     }
 
     public function store(MediaRequest $request): RedirectResponse

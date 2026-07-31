@@ -12,18 +12,23 @@ All options live in `config/gingerminds-media-manager.php`, published as describ
 - `disk` — the Laravel filesystem disk uploaded media files are stored on.
 - `folder` — the default subfolder new uploads are stored under, when no explicit folder is passed to `FileUploadService::store()`/`replace()` (see [Services](./Services.md)).
 
-## `presets`
+## `default_format` / `presets`
 
 ```php
+'default_format' => env('MEDIA_MANAGER_DEFAULT_FORMAT', 'webp'),
+
 'presets' => [
     'micro'     => ['w' => 25,   'h' => 25,  'fit' => 'crop',    'q' => 70],
     'thumbnail' => ['w' => 150,  'h' => 150, 'fit' => 'crop',    'q' => 80],
     'card'      => ['w' => 400,  'h' => 300, 'fit' => 'contain', 'q' => 85],
     'hero'      => ['w' => 1280, 'h' => 720, 'fit' => 'crop',    'q' => 90],
+    // 'card' => ['w' => 400, 'h' => 300, 'fit' => 'contain', 'q' => 85, 'fm' => 'png'],
 ],
 ```
 
 Named [Glide](https://glide.thephpleague.com/) image transforms. Each key becomes a valid `{format}` value for the `GET /api/files/{id}/{format}` endpoint (see [API](./API.md)) and for the `previewPreset` prop of the file upload component (see [Components](./Components.md)). You can add your own presets or change the parameters of the existing ones — any [Glide server parameter](https://glide.thephpleague.com/4.0/api/quick-reference/) is valid.
+
+Every preset is generated in `default_format` (`webp` by default) unless it sets its own `fm` parameter, which takes priority over the default for that preset only.
 
 > Resized images are cached on a dedicated `glide` filesystem disk (backed by `storage/app/glide`), which the package wires into your app automatically — there is nothing to configure for that disk yourself. The cache is cleared automatically whenever the source file is replaced or deleted.
 

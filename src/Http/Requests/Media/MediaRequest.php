@@ -32,6 +32,7 @@ class MediaRequest extends FormRequest implements FormRequestInterface
                 'mimes:jpeg,png,jpg',
                 'max:' . config('gingerminds-media-manager.max_thumbnail_size', 5096),
             ],
+            'media_category_id' => ['nullable', 'integer', 'exists:media_categories,id'],
         ];
     }
 }

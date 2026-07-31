@@ -44,10 +44,16 @@ return [
     'max_file_size'      => env('MEDIA_MANAGER_MAX_FILE_SIZE', 5096),
     'max_thumbnail_size' => env('MEDIA_MANAGER_MAX_THUMBNAIL_SIZE', 5096),
 
+    // Format de sortie par défaut des images générées via les presets Glide (fm).
+    // Peut être surchargé preset par preset en ajoutant une clé 'fm' à ce preset.
+    'default_format' => env('MEDIA_MANAGER_DEFAULT_FORMAT', 'webp'),
+
     'presets' => [
         'micro' => ['w' => 25, 'h' => 25, 'fit' => 'crop',    'q' => 70],
         'thumbnail' => ['w' => 150, 'h' => 150, 'fit' => 'crop',    'q' => 80],
         'card'      => ['w' => 400, 'h' => 300, 'fit' => 'contain', 'q' => 85],
         'hero'      => ['w' => 1280,'h' => 720, 'fit' => 'crop',    'q' => 90],
+        // Exemple de surcharge de format pour un preset donné :
+        // 'card' => ['w' => 400, 'h' => 300, 'fit' => 'contain', 'q' => 85, 'fm' => 'png'],
     ],
 ];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gingerminds\LaravelMediaManager\Services\Processor;
 
 use Gingerminds\LaravelMediaManager\Exceptions\UnknownImagePresetException;
+use Gingerminds\LaravelMediaManager\Services\File\GlideCacheService;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem;
 use League\Glide\Server;
@@ -24,9 +25,12 @@ class ImageProcessor
         $this->server = ServerFactory::create([
             'source'            => $filesystem,
             'cache'             => $filesystem,
-            'cache_path_prefix' => '.cache',
+            'cache_path_prefix' => GlideCacheService::CACHE_PREFIX,
             'driver'            => 'imagick',
             'presets'           => config('gingerminds-media-manager.presets', []),
+            'defaults'          => [
+                'fm' => config('gingerminds-media-manager.default_format', 'webp'),
+            ],
         ]);
     }
 

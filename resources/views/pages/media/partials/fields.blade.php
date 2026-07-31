@@ -1,4 +1,4 @@
-<div class="col-lg-12">
+<div class="col-lg-8">
     <div class="card">
         <div class="card-body">
             <div class="row mb-3">
@@ -29,5 +29,27 @@
         </div>
     </div>
 </div>
-
-<input type="hidden" name="media_category_id" value="{{ isset($media) && $media->media_category_id ? $media->media_category_id : request()->query('media_category_id') }}">
+<div class="col-lg-4">
+    @if(isset($media))
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <x-gingerminds-core::form.inputs.select
+                            id="media_category_id"
+                            :label="__('gingerminds-media-manager::translation.form.media_category')"
+                            :required="true"
+                            data-original-value="{{ $media->media_category_id }}"
+                    >
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ (int) $media->media_category_id === (int) $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </x-gingerminds-core::form.inputs.select>
+                </div>
+            </div>
+        </div>
+    @else
+        <input type="hidden" name="media_category_id" value="{{ request()->query('media_category_id') }}">
+    @endif
+</div>
