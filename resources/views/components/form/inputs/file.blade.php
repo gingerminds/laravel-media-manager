@@ -103,7 +103,6 @@
             data-existing-thumbnail-url="{{ $existingFileThumbnailUrl }}"
             @endif
     >
-        {{-- Input caché --}}
         <input
                 type="file"
                 id="{{ $id }}"
@@ -117,10 +116,9 @@
                 {{ $attributes }}
         />
 
-        {{-- Flag envoyé au serveur quand un fichier déjà existant est supprimé sans être remplacé --}}
+        {{-- Set to 1 by JS when an existing file is removed without a replacement --}}
         <input type="hidden" name="{{ $removeInputName }}" value="0" id="{{ $id }}-remove-flag">
 
-        {{-- Aperçu des fichiers existants / sélectionnés --}}
         @if($preview)
             <ul
                     class="file-preview-list {{ $multiple ? '' : 'file-preview-list-single' }} list-unstyled mb-2 d-none"
@@ -130,7 +128,6 @@
             ></ul>
         @endif
 
-        {{-- Ouvre la modale d'upload --}}
         <button
                 type="button"
                 class="btn btn-outline-primary file-upload-trigger"
@@ -152,7 +149,6 @@
     @enderror
 </div>
 
-{{-- Modale contenant la dropzone --}}
 <div class="modal fade" id="{{ $modalId }}" tabindex="-1" aria-labelledby="{{ $modalId }}-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
