@@ -10,16 +10,10 @@ use Spatie\Permission\PermissionRegistrar;
 
 class LaravelMediaManagerAuthServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
     public function register(): void
     {
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
         $this->app->make(Gate::class)->policy(ResourceResolver::model('media_category'), MediaCategoryPolicy::class);

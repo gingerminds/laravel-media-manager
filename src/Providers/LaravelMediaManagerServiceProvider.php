@@ -138,32 +138,26 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
 
         Route::model('media_category', ResourceResolver::model('media_category'));
 
-        // Chargement des routes du package
         if (! $this->app->routesAreCached()) {
             $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');
         }
 
-        // Chargement des migrations
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
-        // Chargement des vues
         $this->loadViewsFrom(
             __DIR__ . '/../../resources/views',
             'gingerminds-media-manager'
         );
 
-        // Chargement des traductions
         $this->loadTranslationsFrom(
             __DIR__ . '/../../resources/lang',
             'gingerminds-media-manager'
         );
 
-        // Publication de la config
         $this->publishes([
             __DIR__ . '/../../config/gingerminds-media-manager.php' => config_path('gingerminds-media-manager.php'),
         ], 'gingerminds-media-manager-config');
 
-        // Enregistrement de la policy basket
         if (config('gingerminds-media-manager.basket.enabled', true)) {
             Gate::policy(Basket::class, BasketPolicy::class);
         }
