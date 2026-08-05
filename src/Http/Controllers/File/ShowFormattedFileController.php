@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Http\Controllers\File;
 
+use Gingerminds\LaravelMediaManager\Http\Controllers\File\Concerns\RespondsWithCachedFile;
 use Gingerminds\LaravelMediaManager\Models\File\File;
 use Gingerminds\LaravelMediaManager\Services\Processor\ImageProcessor;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShowFormattedFileController
 {
+    use RespondsWithCachedFile;
+
     public function __construct(
         private readonly ImageProcessor $processor
     ) {
     }
 
-    public function __invoke(string $id, string $format): StreamedResponse
+    public function __invoke(Request $request, string $id, string $format): Response
     {
         $file = File::findOrFail($id);
 
@@ -29,6 +32,6 @@ class ShowFormattedFileController
 
         $cachedPath = $this->processor->process($file->path, $format);
 
-        return Storage::disk($file->disk)->response($cachedPath);
+        return $this->fileResponse($request, $file->disk, $cachedPath);
     }
 }

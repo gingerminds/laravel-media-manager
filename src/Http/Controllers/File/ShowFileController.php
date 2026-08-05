@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace Gingerminds\LaravelMediaManager\Http\Controllers\File;
 
+use Gingerminds\LaravelMediaManager\Http\Controllers\File\Concerns\RespondsWithCachedFile;
 use Gingerminds\LaravelMediaManager\Models\File\File;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class ShowFileController
 {
-    public function __invoke(string $id): StreamedResponse
+    use RespondsWithCachedFile;
+
+    public function __invoke(Request $request, string $id): Response
     {
         $file = File::findOrFail($id);
 
@@ -19,9 +23,6 @@ class ShowFileController
             404
         );
 
-        return Storage::disk($file->disk)->response(
-            $file->path,
-            $file->original_name
-        );
+        return $this->fileResponse($request, $file->disk, $file->path, $file->original_name);
     }
 }
