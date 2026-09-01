@@ -21,6 +21,9 @@ use Gingerminds\LaravelMediaManager\Models\File\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\TypeInfo\Type\BuiltinType;
+use Symfony\Component\TypeInfo\Type\NullableType;
+use Symfony\Component\TypeInfo\TypeIdentifier;
 
 /**
  * @property int|null $file_id
@@ -66,6 +69,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         Media::GROUP_READ,
         Basket::GROUP_READ,
     ]),
+    nativeType: new NullableType(new BuiltinType(TypeIdentifier::INT)),
 )]
 #[ApiProperty(
     property: 'file_type',
@@ -90,6 +94,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         Media::GROUP_READ,
         Basket::GROUP_READ,
     ]),
+    nativeType: new NullableType(new BuiltinType(TypeIdentifier::INT)),
 )]
 class Media extends Model implements
     ResourceModelInterface,

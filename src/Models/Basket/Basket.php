@@ -145,6 +145,9 @@ use Symfony\Component\Serializer\Attribute\Groups;
         ),
     ],
 )]
+#[ApiProperty(property: 'medias', serialize: new Groups([
+    Basket::GROUP_READ,
+]))]
 class Basket extends Model
 {
     protected $table = 'baskets';
@@ -176,7 +179,6 @@ class Basket extends Model
     }
 
     /** @return BelongsToMany<Media, $this, Pivot, 'pivot'> */
-    #[Groups([Basket::GROUP_READ])]
     public function medias(): BelongsToMany
     {
         return $this->belongsToMany(Media::class, 'basket_media');
