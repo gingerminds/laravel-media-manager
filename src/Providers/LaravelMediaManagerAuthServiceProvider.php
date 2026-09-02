@@ -4,6 +4,7 @@ namespace Gingerminds\LaravelMediaManager\Providers;
 
 use Gingerminds\LaravelCore\Resolver\ResourceResolver as CoreResourceResolver;
 use Gingerminds\LaravelMediaManager\Policies\Media\MediaCategoryPolicy;
+use Gingerminds\LaravelMediaManager\Policies\Media\MediaPolicy;
 use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -25,6 +26,7 @@ class LaravelMediaManagerAuthServiceProvider extends ServiceProvider
             'user' => CoreResourceResolver::model('user'),
         ]);
 
+        $this->app->make(Gate::class)->policy(ResourceResolver::model('media'), MediaPolicy::class);
         $this->app->make(Gate::class)->policy(ResourceResolver::model('media_category'), MediaCategoryPolicy::class);
 
         $this->registerPolicies();
