@@ -11,7 +11,7 @@ Media library, file uploads, and image processing for Laravel projects built on 
 ## Requirements
 
 - PHP ^8.4
-- `gingerminds/laravel-core` ^4.5
+- `gingerminds/laravel-core` ^4.6
 - The `zip` PHP extension
 
 ## Quick start
