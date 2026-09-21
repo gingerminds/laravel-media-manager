@@ -11,8 +11,8 @@
     'helper' => null,
     'filters' => [],
     'categoryCodes' => [],
-    'endpoint' => '/api/media',
-    'categoryEndpoint' => '/api/media-categories',
+    'endpoint' => null,
+    'categoryEndpoint' => null,
     'perPage' => 24,
     'languages' => null,
 ])
@@ -20,6 +20,13 @@
 @php
     /**
      * Generic media selector field (single or multiple selection).
+     *
+     * Defaults to searching via the BO's own `medias.search` route (auth +
+     * `withoutContextScopes()`, see MediaController::search()), not the
+     * public `/api/media` API Platform resource: a project scoping Media by
+     * language/country/site for its public API would otherwise silently
+     * hide results from this picker. Override `:endpoint`/`:category-endpoint`
+     * to point at a different search source if needed.
      *
      * Single-selection usage (e.g. ProductTranslation::booklet):
      *   <x-gingerminds-media-manager::form.inputs.media-select
@@ -70,6 +77,9 @@
      *       :languages="$allLanguageIsos"
      *   />
      */
+
+    $endpoint = $endpoint ?? route('gingerminds-media-manager.medias.search');
+    $categoryEndpoint = $categoryEndpoint ?? '/api/media-categories';
 
     $fieldName = $name ?? $id;
     $errorKey = str_replace(['[', ']'], ['.', ''], $fieldName);

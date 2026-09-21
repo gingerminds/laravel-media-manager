@@ -30,6 +30,11 @@ class MediaRepository extends AbstractRepository implements RepositoryInterface
         return ResourceResolver::model('media');
     }
 
+    public function withoutContextScopes(): static
+    {
+        return $this;
+    }
+
     public function update(
         ?FormRequestInterface $request,
         ResourceModelInterface $resourceModel

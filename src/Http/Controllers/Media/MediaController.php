@@ -11,12 +11,15 @@ use Gingerminds\LaravelMediaManager\Resolver\ResourceResolver;
 use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class MediaController extends AbstractController
 {
     public const string LABEL_S = 'gingerminds-media-manager::translation.media.name_s';
+
+    private const int MAX_SEARCH_ITEMS_PER_PAGE = 100;
 
     public function __construct(
         protected readonly MediaRepository $repository,
@@ -39,6 +42,30 @@ class MediaController extends AbstractController
             'items'           => $items,
             'mediaCategories' => $this->mediaCategoryRepository->getRootItems(),
         ]);
+    }
+
+    public function search(Request $request): JsonResponse
+    {
+        $this->authorize('viewAny', ResourceResolver::model('media'));
+
+        $request->merge([
+            'itemsPerPage' => min(
+                (int) $request->query('itemsPerPage', 24),
+                self::MAX_SEARCH_ITEMS_PER_PAGE
+            ),
+        ]);
+
+        $items = $this->repository->withoutContextScopes()->get($request);
+
+        return response()->json(
+            collect($items->items())->map(fn (Media $media) => [
+                'id'                  => $media->id,
+                'name'                => $media->name,
+                'thumbnail_reference' => $media->thumbnail_reference,
+                'file_reference'      => $media->file_reference,
+                'language_isos'       => $media->language_isos ?? [],
+            ])->values()
+        );
     }
 
     public function create(): View

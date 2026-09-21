@@ -9,6 +9,10 @@ Route::middleware(['web', 'gingerminds-core.auth'])
     ->prefix(config('gingerminds-core.admin_prefix'))
     ->name('gingerminds-media-manager.')
     ->group(function () {
+        Route::get(
+            'medias/search',
+            [ResourceResolver::controller('media'), 'search']
+        )->name('medias.search');
         Route::resource(
             'medias',
             ResourceResolver::controller('media')
