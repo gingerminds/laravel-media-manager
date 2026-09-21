@@ -27,6 +27,7 @@ use Symfony\Component\TypeInfo\TypeIdentifier;
 
 /**
  * @property int|null $file_id
+ * @property string|null $name
  */
 #[ApiResource(
     operations: [
