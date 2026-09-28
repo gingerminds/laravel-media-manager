@@ -27,7 +27,11 @@ use Gingerminds\LaravelMediaManager\Serializer\Media\MediaNormalizer;
 use Gingerminds\LaravelMediaManager\Services\File\FileUploadService;
 use Gingerminds\LaravelMediaManager\Services\File\GlideCacheService;
 use Gingerminds\LaravelMediaManager\Services\Processor\ImageProcessor;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use RecursiveDirectoryIterator;
@@ -137,6 +141,13 @@ class LaravelMediaManagerServiceProvider extends ServiceProvider
         Route::model('media', ResourceResolver::model('media'));
 
         Route::model('media_category', ResourceResolver::model('media_category'));
+
+        RateLimiter::for(
+            'media-files',
+            fn (Request $request): Limit => Limit::perMinute(
+                Config::integer('gingerminds-media-manager.files_rate_limit', 600)
+            )->by($request->ip())
+        );
 
         if (! $this->app->routesAreCached()) {
             $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');

@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
                 summary: 'Retrieve a file',
                 description: 'Returns the raw file (image, document, etc.)',
             ),
-            middleware: 'throttle:60,1'
+            middleware: 'throttle:media-files'
         ),
         new Get(
             uriTemplate: '/files/{id}/{format}',
@@ -47,7 +47,7 @@ use Illuminate\Database\Eloquent\Model;
                     ),
                 ],
             ),
-            middleware: 'throttle:60,1',
+            middleware: 'throttle:media-files',
         ),
     ]
 )]

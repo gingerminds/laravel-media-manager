@@ -12,6 +12,14 @@ All options live in `config/gingerminds-media-manager.php`, published as describ
 - `disk` — the Laravel filesystem disk uploaded media files are stored on.
 - `folder` — the default subfolder new uploads are stored under, when no explicit folder is passed to `FileUploadService::store()`/`replace()` (see [Services](./Services.md)).
 
+## `files_rate_limit`
+
+```php
+'files_rate_limit' => env('MEDIA_MANAGER_FILES_RATE_LIMIT', 600),
+```
+
+Requests per minute, per IP, allowed on `GET /api/files/{id}` and `GET /api/files/{id}/{format}` (named limiter `media-files`). Keep it high enough for a page listing many thumbnails: each image is one request.
+
 ## `default_format` / `presets`
 
 ```php

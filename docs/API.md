@@ -40,7 +40,7 @@ Exposed fields: `id`, `code`, `name`, `parent_id`, and (read operation only) `ch
 | `GET` | `/api/files/{id}` | Streams the raw file (any mime type), with its original filename. |
 | `GET` | `/api/files/{id}/{format}` | Returns the file resized/processed through a named [preset](./Configuration.md#presets) — image files only. |
 
-`{format}` must be one of the preset keys defined in config — by default `micro`, `thumbnail`, `card`, or `hero`. Requesting a non-image file, or a `{format}` that isn't a configured preset, returns a `400`/`404` respectively. Both endpoints are rate-limited (60 requests/minute). The generated OpenAPI documentation lists the valid `{format}` values as an enum, sourced from your configured presets.
+`{format}` must be one of the preset keys defined in config — by default `micro`, `thumbnail`, `card`, or `hero`. Requesting a non-image file, or a `{format}` that isn't a configured preset, returns a `400`/`404` respectively. Both endpoints share the `media-files` rate limiter: `files_rate_limit` requests/minute per IP (600 by default, see [Configuration](./Configuration.md)). The generated OpenAPI documentation lists the valid `{format}` values as an enum, sourced from your configured presets.
 
 ### Basket
 
