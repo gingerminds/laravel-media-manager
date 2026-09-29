@@ -15,7 +15,7 @@ All options live in `config/gingerminds-media-manager.php`, published as describ
 ## `files_rate_limit`
 
 ```php
-'files_rate_limit' => env('MEDIA_MANAGER_FILES_RATE_LIMIT', 600),
+'files_rate_limit' => (int) env('MEDIA_MANAGER_FILES_RATE_LIMIT', 600),
 ```
 
 Requests per minute, per IP, allowed on `GET /api/files/{id}` and `GET /api/files/{id}/{format}` (named limiter `media-files`). Keep it high enough for a page listing many thumbnails: each image is one request.

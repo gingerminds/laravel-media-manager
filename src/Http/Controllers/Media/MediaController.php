@@ -94,7 +94,7 @@ class MediaController extends AbstractController
         /** @var Media $media */
         $media = $this->repository->update($request, new Media());
 
-        return redirect()->route('gingerminds-media-manager.medias.index')
+        return $this->redirectAfterStore('gingerminds-media-manager.medias', $media->id)
             ->with('success', __('gingerminds-core::translation.successfully_created', [
                 'model' => __(self::LABEL_S)
                     . ' '
@@ -108,7 +108,7 @@ class MediaController extends AbstractController
 
         $this->repository->update($request, $media);
 
-        return redirect()->route('gingerminds-media-manager.medias.edit', $media->id)
+        return $this->redirectAfterUpdate('gingerminds-media-manager.medias', $media->id)
             ->with('success', __('gingerminds-core::translation.successfully_updated', [
                 'model' => __(self::LABEL_S)
                     . ' '

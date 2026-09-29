@@ -45,7 +45,7 @@ return [
     'max_thumbnail_size' => env('MEDIA_MANAGER_MAX_THUMBNAIL_SIZE', 5096),
 
     // Requêtes/minute par IP sur GET /api/files/*.
-    'files_rate_limit' => env('MEDIA_MANAGER_FILES_RATE_LIMIT', 600),
+    'files_rate_limit' => (int) env('MEDIA_MANAGER_FILES_RATE_LIMIT', 600),
 
     // Format de sortie par défaut des images générées via les presets Glide (fm).
     // Peut être surchargé preset par preset en ajoutant une clé 'fm' à ce preset.
