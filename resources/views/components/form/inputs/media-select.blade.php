@@ -293,7 +293,7 @@
                         <div class="media-select-results" data-role="results"></div>
 
                         <div class="text-center mt-3">
-                            <button type="button" class="btn btn-sm btn-outline-secondary d-none" data-role="load-more">
+                            <button type="button" class="btn btn-sm btn-outline-primary d-none" data-role="load-more">
                                 @lang('gingerminds-media-manager::translation.media_select.load_more')
                             </button>
                         </div>
