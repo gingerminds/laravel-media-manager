@@ -101,8 +101,12 @@ class MediaCategoryController extends AbstractController
         /** @var class-string<MediaCategory> $modelClass */
         $modelClass = ResourceResolver::model('media_category');
 
-        foreach ($request->input('ids') as $position => $id) {
-            $modelClass::where('id', $id)->update(['position' => $position]);
+        $ids        = $request->input('ids');
+        $categories = $modelClass::query()->whereKey($ids)->get()->keyBy('id');
+
+        // Saved one by one so `eloquent.saved` fires and flushes the cache.
+        foreach ($ids as $position => $id) {
+            $categories->get($id)?->update(['position' => $position]);
         }
 
         return response()->json(['success' => true]);
