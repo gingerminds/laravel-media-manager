@@ -8,6 +8,7 @@ use Gingerminds\LaravelMediaManager\Exceptions\FileUploadException;
 use Gingerminds\LaravelMediaManager\Models\File\File;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FileUploadService
 {
@@ -21,8 +22,18 @@ class FileUploadService
     public function store(UploadedFile $file, ?string $folder = null): File
     {
         $extension = $file->getClientOriginalExtension();
-        $basename  = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeName  = str($basename)->slug()->toString() . ($extension !== '' ? '.' . $extension : '');
+        $suffix    = $extension !== '' ? '.' . $extension : '';
+        $slug      = str(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))->slug()->toString();
+        $directory = $folder ?? $this->folder;
+        $storage   = Storage::disk($this->disk);
+        $path      = $directory . '/' . $slug . $suffix;
+
+        // Same name, different content: never overwrite another File's path.
+        if ($storage->exists($path) && !$this->hasSameContent($file, $path)) {
+            do {
+                $path = $directory . '/' . $slug . '-' . Str::lower(Str::random(6)) . $suffix;
+            } while ($storage->exists($path));
+        }
 
         // Read before storeAs() moves/streams the file away — normalize()
         // needs a still-existing real path to double-check an OOXML-flavored
@@ -33,9 +44,8 @@ class FileUploadService
             $file->getRealPath() ?: null,
         );
 
-        $path = $file->storeAs($folder ?? $this->folder, $safeName, $this->disk);
-
-        if ($path === false) {
+        // Identical content already on disk: share its path instead of writing a copy.
+        if (!$storage->exists($path) && $file->storeAs($directory, basename($path), $this->disk) === false) {
             throw FileUploadException::couldNotStore();
         }
 
@@ -69,11 +79,32 @@ class FileUploadService
             return;
         }
 
-        $this->glideCacheService->clear($file);
+        $pathStillUsed = File::query()
+            ->where('disk', $file->disk)
+            ->where('path', $file->path)
+            ->whereKeyNot($file->getKey())
+            ->exists();
 
-        Storage::disk($file->disk)->delete($file->path);
+        if (!$pathStillUsed) {
+            $this->glideCacheService->clear($file);
+
+            Storage::disk($file->disk)->delete($file->path);
+        }
 
         $file->delete();
+    }
+
+    private function hasSameContent(UploadedFile $file, string $path): bool
+    {
+        $realPath = $file->getRealPath();
+
+        if ($realPath === false) {
+            return false;
+        }
+
+        $existing = Storage::disk($this->disk)->checksum($path, ['checksum_algo' => 'md5']);
+
+        return $existing === hash_file('md5', $realPath);
     }
 
     public function url(?File $file): ?string
